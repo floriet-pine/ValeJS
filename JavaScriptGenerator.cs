@@ -11,6 +11,7 @@ public static class JavaScriptGenerator {
   private static readonly Regex _sIdNameRegex = new Regex("SId\\(\"C\\(\\\\\"(?<Name>[a-z_]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
   private static readonly Regex _codeVarNameRegex = new Regex("CodeVarName\\(\"(?<Name>.+)\"\\)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+  private static int _tempVarCounter = 0;
   private static readonly HashSet<string> _ignoredDiscardTypes = new HashSet<string>(){ "Unstackify" };
 
   private static Dictionary<string, Dictionary<string, int>> _indexByImplementaionByInterface = new Dictionary<string, Dictionary<string, int>>();
@@ -43,6 +44,10 @@ public static class JavaScriptGenerator {
 
   private static string LevelString(int level) {
     return new String(' ', level * 2);
+  }
+
+  private static string GetUniqueVarName() {
+    return $"__temp_{_tempVarCounter++}}";
   }
 
   private static string ParameterName(string functionName, int argumentIndex) {
@@ -349,10 +354,25 @@ public static class JavaScriptGenerator {
     var thenBlock = @if.ThenBlock;
     var elseBlock = @if.ElseBlock;
 
-    yield return isConsecutor ? "if (" : "(";
+    string tempVarName = null;
+    if (isConsecutor) {
+      tempVarName = GetUniqueVarName();
+      yield return $"let {tempVarName};";
+      yield return "if (";
+    }else{
+      yield return "(";
+    }
+
     foreach(var conditionCode in GenerateExpression(conditionBlock, contentOfFunctionName, level))
       yield return conditionCode;
-    yield return isConsecutor ? ") {" : ") ? (";
+
+    if (isConsecutor) {
+      yield return ") {";
+      if (thenBlock.__type == "Consecutor")
+        yield return "";
+    }else{
+      yield return ") ? (";
+    }
 
     foreach(var thenCode in GenerateExpression(thenBlock, contentOfFunctionName, level))
       yield return thenCode;
