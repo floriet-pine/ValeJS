@@ -102,6 +102,7 @@ namespace dev.vale.awesome {
       var valeCode = @"
         // immutable unknown-size-array
 
+
         fn Arr<M, F>(n int, generator &F) Array<M, T>
         rules(M Mutability, T Ref, Prot(""__call"", (&F, int), T))
         {

@@ -1,0 +1,11 @@
+[core]
+	repositoryformatversion = 0
+	fileMode = false
+	bare = false
+	logallrefupdates = true
+[user]
+	name = repl.it user
+	email = replituser@example.com
+[remote "origin"]
+	url = https://github.com/floriet-pine/ValeJS
+	fetch = +refs/heads/*:refs/remotes/origin/*
