@@ -517,11 +517,11 @@ public static class JavaScriptGenerator {
 
       yield return " ";
       yield return codeVarName;
-      yield return ": ";
+      yield return ": { value: ";
       //yield return ParameterName(contentOfFunctionName, argumentIndex);
       foreach (var expressionCode in GenerateExpression(sourceExpr, contentOfFunctionName, level, parent: null, inline: true))
         yield return expressionCode;
-      yield return ",";
+      yield return ", },";
     }
 
     yield return "})";
@@ -580,6 +580,10 @@ public static class JavaScriptGenerator {
   }
 
   private static IEnumerable<string> GenerateConstructUnknownSizeArrayCode(IConstructUnknownSizeArray constructUnknownSizeArray, string contentOfFunctionName, int level) {
+    var methodName =
+      _namingHelper.FixFunction(constructUnknownSizeArray.GeneratorMethod.Name);
+    var interfaceName = CName(constructUnknownSizeArray.GeneratorReferend.Name);
+
     yield return "(function(){\r\n";
 
     yield return "const __size = ";
@@ -587,12 +591,15 @@ public static class JavaScriptGenerator {
         yield return expressionCode;
     yield return ";\r\n";
 
+    yield return "const __generator = ";
+    foreach(var expressionCode in GenerateExpression(constructUnknownSizeArray.GeneratorExpr, contentOfFunctionName, level))
+        yield return expressionCode;
+    yield return ";\r\n";
+
     yield return "const __arr = new Array(__size);\r\n";
     yield return "for(let __i = 0; __i < __size; __i++) {\r\n";
-    yield return "  __arr[__i] = ";
-    foreach(var expressionCode in GenerateExpression(constructUnknownSizeArray.GeneratorExpr, contentOfFunctionName, level))
-        yield return expressionCode;   
-    yield return "(__i);\r\n}\r\n";
+    yield return "  __arr[__i] = __generator";
+    yield return $"._ic_{interfaceName}_{methodName}" + "(__generator, __i);\r\n}\r\n";
 
     yield return "return __arr;";
     yield return "\r\n})()";

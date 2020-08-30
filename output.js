@@ -20,7 +20,7 @@
   }
 
   function IFunction1_2(iFunction1_2_p_0) {
-    return Object.create(_proto_IFunction1_AnonSubstruct, { anonSubstructMember0: iFunction1_2_p_0,});
+    return Object.create(_proto_IFunction1_AnonSubstruct, { anonSubstructMember0: { value: iFunction1_2_p_0, },});
   }
 
   function immDrop(immDrop_p_0) {
@@ -67,9 +67,10 @@
         generator_1_1 = valeArray_p_1;
         blockResult0_2_2 = (function(){
 const __size = size_0;
+const __generator = generator_1_1;
 const __arr = new Array(__size);
 for(let __i = 0; __i < __size; __i++) {
-  __arr[__i] = generator_1_1(__i);
+  __arr[__i] = __generator._ic_IFunction1__call(__generator, __i);
 }
 return __arr;
 })();
@@ -111,7 +112,7 @@ return __arr;
   }
 
   function constructor() {
-    return Object.create(_proto_IFunction1_1_AnonSubstruct_1, { anonSubstructMember0_1: Object.create({}, {}),});
+    return Object.create(_proto_IFunction1_1_AnonSubstruct_1, { anonSubstructMember0_1: { value: Object.create({}, {}), },});
   }
 
   function immInterfaceDestructor(immInterfaceDestructor_p_0) {

@@ -118,6 +118,9 @@ public class AstModel : IProgram,
 
   public AstModel SizeExpr { get; set; }
   public AstModel GeneratorExpr { get; set; }
+  public AstModel GeneratorReferend { get; set; }
+  public AstModel GeneratorMethod { get; set; }
+  IPrototype IConstructUnknownSizeArray.GeneratorMethod => GeneratorMethod;
 }
 
 public interface IExpression {
@@ -272,4 +275,6 @@ public interface IArrayLoad : IExpression {
 public interface IConstructUnknownSizeArray : IExpression {
   AstModel SizeExpr { get; }
   AstModel GeneratorExpr { get; }
+  AstModel GeneratorReferend { get; }
+  IPrototype GeneratorMethod { get; }
 }
