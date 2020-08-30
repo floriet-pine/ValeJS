@@ -13,11 +13,15 @@ public static class JavaScriptGenerator {
   private static readonly Regex _cNameRegex = new Regex("C\\(\"(?<Name>[a-z_]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
   private static readonly Regex _sIdNameRegex = new Regex("SId\\(\"C\\(\\\\\"(?<Name>[a-z_]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
   private static readonly Regex _codeVarNameRegex = new Regex("CodeVarName\\(\"(?<Name>.+)\"\\)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-  private static readonly Regex _templarBlockResultVarNameRegex = new Regex("TemplarBlockResultVarName\\((?<Number>.+)\\)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+  private static readonly Regex _templarBlockResultVarNameRegex = new Regex("(TemplarBlockResultVarName)\\((?<Number>\\d+)\\)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+  private static readonly Regex _codeLocationRegex = new Regex("CodeLocation\\((?<Position>[\\d\\-,]+)\\)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
   private static int _tempVarCounter = 0;
   private static readonly HashSet<string> _ignoredDiscardTypes = new HashSet<string>(){ "Unstackify" };
   private static readonly HashSet<string> _noReturnConsecutorChild = new HashSet<string>(){ "Return", "Stackify", "Destroy" };
+  private static readonly HashSet<string> _anonymousVarNames = new HashSet<string>(){ "AnonymousSubstructMemberName", "TemplarTemporaryVarName", "TemplarBlockResultVarName", };
+
+  private static readonly HashSet<string> _functionLocalVarNames = new HashSet<string>();
 
   private static NamingHelper _namingHelper = null;
   private static Dictionary<string, string> _protoNameByStructName = new Dictionary<string, string>();
@@ -75,6 +79,15 @@ public static class JavaScriptGenerator {
     match = _templarBlockResultVarNameRegex.Match(str);
     if (match.Success)
       return $"_blockResult_{match.Groups["Number"].Value}";
+
+    if (_anonymousVarNames.Any(x => str.EndsWith(x))) {
+      var matches = _codeLocationRegex.Matches(str);
+      var lastMatch = matches.LastOrDefault();
+      if (lastMatch != null) {
+        var codeLocation = lastMatch.Groups["Position"].Value;
+        return $"_templar_CL_{codeLocation.Replace(",", "_").Replace("-", "m")}";
+      }
+    }
       
     return null;
   }
@@ -157,6 +170,7 @@ public static class JavaScriptGenerator {
   }
 
   private static IEnumerable<string> GenerateFunction(IFunction function, string contentOfFunctionName, int level) {
+    _functionLocalVarNames.Clear();
     var functionName = function.Prototype.Name;
     //var sid = SIdName(functionName);
     var saneFunctionName = SaneFunctionName(functionName);
@@ -183,12 +197,19 @@ public static class JavaScriptGenerator {
       yield return ParameterName(saneFunctionName, i);
     }
 
-    yield return $") {{";
-    yield return "\r\n";
+    yield return $") {{\r\n";
 
+    string cachedCode = "";
     foreach (var blockCode in GenerateBlock(function.Block, saneFunctionName, level + 1)) {
-      yield return blockCode;
+      cachedCode += blockCode; //TODO: Should be itterated, might require AST changes
     }
+
+    foreach(var functionLocalVarName in _functionLocalVarNames) {
+      yield return LevelString(level + 1);
+      yield return $"let {functionLocalVarName};\r\n";
+    }
+
+    yield return cachedCode;
 
     yield return LevelString(level);
     yield return "}\r\n\r\n";
@@ -225,7 +246,7 @@ public static class JavaScriptGenerator {
       if (first != argExpr)
         yield return ", ";
 
-      foreach(var argExprCode in GenerateExpression(argExpr, contentOfFunctionName, level)) {
+      foreach(var argExprCode in GenerateExpression(argExpr, contentOfFunctionName, level, null, true)) {
         yield return argExprCode;
       }
     }
@@ -284,7 +305,7 @@ public static class JavaScriptGenerator {
     yield return ")";
   }
 
-  private static IEnumerable<string> GenerateConsecutor(IConsecutor consecutor, string contentOfFunctionName, int level) {
+  private static IEnumerable<string> GenerateConsecutor(IConsecutor consecutor, string contentOfFunctionName, int level, IExpression parent, bool inline) {
     if (VERBOSE)
       yield return "\r\n//<consecutor>\r\n";
 
@@ -292,6 +313,8 @@ public static class JavaScriptGenerator {
     if (_noReturnConsecutorChild.Contains(lastExpression.__type))
       lastExpression = null; // Don't treat any ast the last (avoid creating a return)
 
+    if (inline)
+      yield return "(function(){";
     foreach(var expr in consecutor.Exprs) {
       yield return LevelString(level);
       if (expr == lastExpression)
@@ -303,6 +326,9 @@ public static class JavaScriptGenerator {
       if (expr == lastExpression)
         yield return ";\r\n";
     }
+    if (inline)
+      yield return "})()";
+
     if (VERBOSE)
       yield return "\r\n//</consecutor>\r\n";
   }
@@ -337,9 +363,10 @@ public static class JavaScriptGenerator {
       throw new Exception("Unsupported stackify: Local not found");
 
     var codeVarName = ExtractCodeVarName(local);
-
+    _functionLocalVarNames.Add(codeVarName);
     yield return LevelString(level);
-    yield return $"let {codeVarName}";
+    //yield return $"let {codeVarName}";
+    yield return $"{codeVarName}";
 
     if (stackify.SourceExpr != null) {
       yield return $" = ";
@@ -490,10 +517,10 @@ public static class JavaScriptGenerator {
     yield return "})";
   }
 
-  private static IEnumerable<string> GenerateStructToInterfaceUpcast(AstModel structToInterfaceUpcast, string contentOfFunctionName, int level) {
+  private static IEnumerable<string> GenerateStructToInterfaceUpcast(AstModel structToInterfaceUpcast, string contentOfFunctionName, int level, IExpression parent, bool inline) {
     if (VERBOSE)
       yield return $"\r\n//<StructToInterfaceUpcast />\r\n";
-      foreach(var expressionCode in GenerateExpression(structToInterfaceUpcast.SourceExpr, contentOfFunctionName, level))
+      foreach(var expressionCode in GenerateExpression(structToInterfaceUpcast.SourceExpr, contentOfFunctionName, level, parent: null, inline: inline))
         yield return expressionCode;
   }
 
@@ -507,6 +534,8 @@ public static class JavaScriptGenerator {
       foreach(var expressionCode in GenerateExpression(memberLoad.StructExpr, contentOfFunctionName, level))
         yield return expressionCode;
       yield return ".";
+      if (codeVarName == null || codeVarName == "")
+        yield return ($"\r\ncodeVarName: {codeVarName} - {memberName}\r\n");
       yield return codeVarName;
   }
 
@@ -557,7 +586,7 @@ public static class JavaScriptGenerator {
   }
   
 
-  private static IEnumerable<string> GenerateExpression(AstModel astModel, string contentOfFunctionName, int level, AstModel parent = null) {
+  private static IEnumerable<string> GenerateExpression(AstModel astModel, string contentOfFunctionName, int level, AstModel parent = null, bool inline = false) {
     if (astModel == null)
       throw new Exception("No AST model");
 
@@ -579,7 +608,7 @@ public static class JavaScriptGenerator {
           yield return returnCode;
         break;
       case "Consecutor":
-        foreach (var consecutorCode in GenerateConsecutor(astModel, contentOfFunctionName, level))
+        foreach (var consecutorCode in GenerateConsecutor(astModel, contentOfFunctionName, level, parent, inline))
           yield return consecutorCode;
         break;
       case "Stackify":
@@ -641,7 +670,7 @@ public static class JavaScriptGenerator {
           yield return whileCode;
         break;
       case "StructToInterfaceUpcast":
-        foreach (var structToInterfaceUpcastCode in GenerateStructToInterfaceUpcast(astModel, contentOfFunctionName, level))
+        foreach (var structToInterfaceUpcastCode in GenerateStructToInterfaceUpcast(astModel, contentOfFunctionName, level, null, inline))
           yield return structToInterfaceUpcastCode;
         break;
       case "NewArrayFromValues":

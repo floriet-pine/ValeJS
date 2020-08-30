@@ -7,7 +7,7 @@ using System.Linq;
 namespace dev.vale.awesome {
 
   public class Compilifier {
-    private const bool GENERATE_AST = false;
+    private const bool GENERATE_AST = true;
 
     public static void Main() {
       //var valeCode = "fn main() { 42 }";
@@ -110,6 +110,7 @@ namespace dev.vale.awesome {
 
         fn main() {
           a = Arr<imm>(5, {_});
+          c = 1 + 2;
           = a[3];
         }
       ";
@@ -156,4 +157,3 @@ namespace dev.vale.awesome {
 
   }
 }
-

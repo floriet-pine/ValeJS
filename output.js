@@ -11,105 +11,115 @@
   function __ext___addStrStr(a, b) { return a + b; }
   function __ext___print(p) { console.log(p); }
 
-  function main() {
-            let a_0 = F_Arr_main_0_287_main_0_287_main_0_287_(5, Object.create({}, {}));
-        let __blockVar_1 = a_0[3];
-            return __blockVar_1;
+  function _addIntInt_0(_addIntInt_0_p_0, _addIntInt_0_p_1) {
+__ext__addIntInt_0(_addIntInt_0_p_0, _addIntInt_0_p_1)  }
+
+  function main_0() {
+    let __blockVar_0;
+    let __blockVar_1;
+    let __blockVar_2;
+            __blockVar_0 = Arr_0(5, Object.create({}, {}));
+            __blockVar_1 = _0(1, 2);
+        __blockVar_2 = __blockVar_0[3];
+                return __blockVar_2;
   }
 
-  function F_IFunction1_Mutable_i_main_0_287_(f_IFunction1_Mutable_i_main_0_287__p_0) {
-    return Object.create(_proto_IFunction_IFunction, { : f_IFunction1_Mutable_i_main_0_287__p_0,});
+  function IFunction1_2(iFunction1_2_p_0) {
+    return Object.create(_proto_IFunction1_0_AnonSubstruct_0, { : iFunction1_2_p_0,});
   }
 
-  function ImmInterfaceDestructorName_(immInterfaceDestructorName__p_0) {
+  function immDrop_0(immDrop_0_p_0) {
             return Object.create({}, {});
   }
 
-  function C_IFunction1_Tup_call_IFunction1_Tup_(c_IFunction1_Tup_call_IFunction1_Tup__p_0, c_IFunction1_Tup_call_IFunction1_Tup__p_1) {
-    return c_IFunction1_Tup_call_IFunction1_Tup__p_0._ic_IFunction_2_C_IFunction1_Tup_call_IFunction1_Tup_(c_IFunction1_Tup_call_IFunction1_Tup__p_0, c_IFunction1_Tup_call_IFunction1_Tup__p_1);
+  function _call_1(_call_1_p_0, _call_1_p_1) {
+    return _call_1_p_0._ic_IFunction1_1__call_1(_call_1_p_0, _call_1_p_1);
   }
 
-  function ImmConcreteDestructorName2_main_0_287_(immConcreteDestructorName2_main_0_287__p_0) {
+  function immConcreteDestructor_3(immConcreteDestructor_3_p_0) {
                 return Object.create({}, {});
   }
 
-  function C_IFunction1_Mutable_i_AS_main_0_287_call_IFunctio(c_IFunction1_Mutable_i_AS_main_0_287_call_IFunctio_p_0, c_IFunction1_Mutable_i_AS_main_0_287_call_IFunctio_p_1) {
-    return main_2(c_IFunction1_Mutable_i_AS_main_0_287_call_IFunctio_p_0., c_IFunction1_Mutable_i_AS_main_0_287_call_IFunctio_p_1);
+  function _call_2(_call_2_p_0, _call_2_p_1) {
+    return _call_4(_call_2_p_0.
+codeVarName:  - anonSubstructMember0_0
+, _call_2_p_1);
   }
 
-  function ImmInterfaceDestructorName_13_call_ImmInterfaceDes(immInterfaceDestructorName_13_call_ImmInterfaceDes_p_0, immInterfaceDestructorName_13_call_ImmInterfaceDes_p_1) {
-            return ImmInterfaceDestructorName_(immInterfaceDestructorName_13_call_ImmInterfaceDes_p_1);
+  function _call_5(_call_5_p_0, _call_5_p_1) {
+            return immDrop_0(_call_5_p_1);
   }
 
-  function F_Arr_main_0_287_main_0_287_main_0_287_(f_Arr_main_0_287_main_0_287_main_0_287__p_0, f_Arr_main_0_287_main_0_287_main_0_287__p_1) {
-        let n_0 = f_Arr_main_0_287_main_0_287_main_0_287__p_0;
-        let generator_1 = f_Arr_main_0_287_main_0_287_main_0_287__p_1;
-        let _blockResult_1_4 =         let __blockVar_3 = F_Array_IFunction1_Mutable_i_IFunction1_Mutable_i_(n_0,         let __blockVar_2 = F_IFunction1_Mutable_i_main_0_287_(generator_1);
+  function Arr_0(arr_0_p_0, arr_0_p_1) {
+    let __blockVar_0;
+    let __blockVar_1;
+    let __blockVar_4;
+    let __blockVar_3;
+    let __blockVar_2;
+        __blockVar_0 = arr_0_p_0;
+        __blockVar_1 = arr_0_p_1;
+        __blockVar_4 =         __blockVar_3 = Array_0(__blockVar_0, (function(){        __blockVar_2 = IFunction1_2(__blockVar_1);
     return __blockVar_2;
-);
-    F_destructor_IFunction1_Mutable_i_AS_main_0_287_IF(__blockVar_2);    return __blockVar_3;
+})());
+    destructor_0(__blockVar_2);    return __blockVar_3;
 ;
-                return _blockResult_1_4;
+                return __blockVar_4;
   }
 
-  function F_Array_IFunction1_Mutable_i_IFunction1_Mutable_i_(f_Array_IFunction1_Mutable_i_IFunction1_Mutable_i__p_0, f_Array_IFunction1_Mutable_i_IFunction1_Mutable_i__p_1) {
-        let size_0 = f_Array_IFunction1_Mutable_i_IFunction1_Mutable_i__p_0;
-        let generator_1 = f_Array_IFunction1_Mutable_i_IFunction1_Mutable_i__p_1;
-        let __blockVar_2 = new Array(size_0);
+  function Array_0(array_0_p_0, array_0_p_1) {
+    let __blockVar_0;
+    let __blockVar_1;
+    let __blockVar_2;
+        __blockVar_0 = array_0_p_0;
+        __blockVar_1 = array_0_p_1;
+        __blockVar_2 = new Array(__blockVar_0);
                 return __blockVar_2;
   }
 
-  function ImmConcreteDestructorName2_ImmInterfaceDestructorN(immConcreteDestructorName2_ImmInterfaceDestructorN_p_0) {
+  function immConcreteDestructor_2(immConcreteDestructor_2_p_0) {
                 return Object.create({}, {});
   }
 
-  function C_IFunction1_Tup_AS_ImmInterfaceDestructorName_13_(c_IFunction1_Tup_AS_ImmInterfaceDestructorName_13__p_0, c_IFunction1_Tup_AS_ImmInterfaceDestructorName_13__p_1) {
-    return ImmInterfaceDestructorName_13_call_ImmInterfaceDes(c_IFunction1_Tup_AS_ImmInterfaceDestructorName_13__p_0., c_IFunction1_Tup_AS_ImmInterfaceDestructorName_13__p_1);
+  function _call_3(_call_3_p_0, _call_3_p_1) {
+    return _call_5(_call_3_p_0.
+codeVarName:  - anonSubstructMember0_1
+, _call_3_p_1);
   }
 
-  function ImmInterfaceDestructorName_IFunction1_Tup_AS_ImmIn(immInterfaceDestructorName_IFunction1_Tup_AS_ImmIn_p_0) {
-    return ImmConcreteDestructorName2_IFunction1_Tup_AS_ImmIn(immInterfaceDestructorName_IFunction1_Tup_AS_ImmIn_p_0);
+  function immInterfaceDestructor_1(immInterfaceDestructor_1_p_0) {
+    return immConcreteDestructor_0(immInterfaceDestructor_1_p_0);
   }
 
-  function ImmConcreteDestructorName2_IFunction1_Tup_AS_ImmIn(immConcreteDestructorName2_IFunction1_Tup_AS_ImmIn_p_0) {
+  function immConcreteDestructor_0(immConcreteDestructor_0_p_0) {
                     return Object.create({}, {});
   }
 
-  function C_IFunction1_Mutable_i_call_IFunction1_Mutable_i_(c_IFunction1_Mutable_i_call_IFunction1_Mutable_i__p_0, c_IFunction1_Mutable_i_call_IFunction1_Mutable_i__p_1) {
-    return c_IFunction1_Mutable_i_call_IFunction1_Mutable_i__p_0._ic_IFunction_C_IFunction1_Mutable_i_call_IFunction1_Mutable_i_(c_IFunction1_Mutable_i_call_IFunction1_Mutable_i__p_0, c_IFunction1_Mutable_i_call_IFunction1_Mutable_i__p_1);
+  function _call_0(_call_0_p_0, _call_0_p_1) {
+    return _call_0_p_0._ic_IFunction1_0__call_0(_call_0_p_0, _call_0_p_1);
   }
 
-  function ImmConcreteDestructorName2_UnknownSizeArray_Unknow(immConcreteDestructorName2_UnknownSizeArray_Unknow_p_0) {
+  function immConcreteDestructor_1(immConcreteDestructor_1_p_0) {
             return Object.create({}, {});
   }
 
-  function main_2(main_2_p_0, main_2_p_1) {
-        let __blockVar_0 = main_2_p_0;
-        let __blockVar_1 = main_2_p_1;
-        let __blockVar_2 = __blockVar_1;
+  function _0(_0_p_0, _0_p_1) {
+    let __blockVar_0;
+    let __blockVar_1;
+    let __blockVar_2;
+        __blockVar_0 = _0_p_0;
+        __blockVar_1 = _0_p_1;
+        __blockVar_2 = _addIntInt_0(__blockVar_0, __blockVar_1);
                 return __blockVar_2;
   }
 
-  function ImmInterfaceDestructorName_AS_ImmInterfaceDestruct() {
-    return void(0);
+  function _call_4(_call_4_p_0, _call_4_p_1) {
+    let __blockVar_0;
+    let __blockVar_1;
+    let __blockVar_2;
+        __blockVar_0 = _call_4_p_0;
+        __blockVar_1 = _call_4_p_1;
+        __blockVar_2 = __blockVar_1;
+                return __blockVar_2;
   }
 
-  function ImmInterfaceDestructorName_IFunction1_Tup_IFunctio(immInterfaceDestructorName_IFunction1_Tup_IFunctio_p_0) {
-    return immInterfaceDestructorName_IFunction1_Tup_IFunctio_p_0._ic_IFunction_2_ImmInterfaceDestructorName_IFunction1_Tup_IFunctio(immInterfaceDestructorName_IFunction1_Tup_IFunctio_p_0);
-  }
-
-  function F_destructor_IFunction1_Mutable_i_AS_main_0_287_IF(f_destructor_IFunction1_Mutable_i_AS_main_0_287_IF_p_0) {
-                    return Object.create({}, {});
-  }
-
-const _proto_IFunction_IFunction = {
- _ic_IFunction_C_IFunction1_Mutable_i_call_IFunction1_Mutable_i_: C_IFunction1_Mutable_i_AS_main_0_287_call_IFunctio,
-
-};
-const _proto_IFunction_2_IFunction_2 = {
- _ic_IFunction_2_C_IFunction1_Tup_call_IFunction1_Tup_: C_IFunction1_Tup_AS_ImmInterfaceDestructorName_13_,
- _ic_IFunction_2_ImmInterfaceDestructorName_IFunction1_Tup_IFunctio: ImmInterfaceDestructorName_IFunction1_Tup_AS_ImmIn,
-
-};
-  console.log(main());
-})();
+  function constructor_0() {
