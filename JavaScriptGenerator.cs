@@ -589,7 +589,7 @@ public static class JavaScriptGenerator {
 
     yield return "const __arr = new Array(__size);\r\n";
     yield return "for(let __i = 0; __i < __size; __i++) {\r\n";
-    yield return "  __arr[i] = ";
+    yield return "  __arr[__i] = ";
     foreach(var expressionCode in GenerateExpression(constructUnknownSizeArray.GeneratorExpr, contentOfFunctionName, level))
         yield return expressionCode;   
     yield return "(__i);\r\n}\r\n";
