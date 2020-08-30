@@ -117,6 +117,7 @@ public class AstModel : IProgram,
   public AstModel IndexExpr { get; set; }
 
   public AstModel SizeExpr { get; set; }
+  public AstModel GeneratorExpr { get; set; }
 }
 
 public interface IExpression {
@@ -270,4 +271,5 @@ public interface IArrayLoad : IExpression {
 
 public interface IConstructUnknownSizeArray : IExpression {
   AstModel SizeExpr { get; }
+  AstModel GeneratorExpr { get; }
 }

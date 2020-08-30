@@ -72,6 +72,8 @@ public static class JavaScriptGenerator {
   }
 
   private static string ExtractCodeVarName(string str) {
+    return str;
+
     var match = _codeVarNameRegex.Match(str);
     if (match.Success)
       return $"{match.Groups["Name"].Value}";
@@ -500,17 +502,25 @@ public static class JavaScriptGenerator {
 
     for (var i = 0; i < newStruct.MemberNames.Count; i++) {
       var memberName = newStruct.MemberNames[i];
-      var sourceExpr = newStruct.SourceExprs[i];
-      if (sourceExpr.__type != "Argument")
-        throw new Exception($"Unsupported source expression in NewStruct: {sourceExpr.__type}. fullStructName: {fullStructName}");
-
-      var argumentIndex = sourceExpr.ArgumentIndex;
       var codeVarName = ExtractCodeVarName(memberName);
+
+      var sourceExpr = newStruct.SourceExprs[i];
+
+/*
+      if (sourceExpr.__type == "Argument") {
+      var argumentIndex = sourceExpr.ArgumentIndex;
+      }else{
+        throw new Exception($"Unsupported source expression in NewStruct: {sourceExpr.__type}. fullStructName: {fullStructName}");
+      }
+      */
+
 
       yield return " ";
       yield return codeVarName;
       yield return ": ";
-      yield return ParameterName(contentOfFunctionName, argumentIndex);
+      //yield return ParameterName(contentOfFunctionName, argumentIndex);
+      foreach (var expressionCode in GenerateExpression(sourceExpr, contentOfFunctionName, level, parent: null, inline: true))
+        yield return expressionCode;
       yield return ",";
     }
 
@@ -528,15 +538,15 @@ public static class JavaScriptGenerator {
     if (VERBOSE)
       yield return "\r\n//<MemberLoad />\r\n";
 
-      var memberName = memberLoad.MemberName;
-      var codeVarName = ExtractCodeVarName(memberName);
+    var memberName = memberLoad.MemberName;
+    var codeVarName = ExtractCodeVarName(memberName);
 
-      foreach(var expressionCode in GenerateExpression(memberLoad.StructExpr, contentOfFunctionName, level))
-        yield return expressionCode;
-      yield return ".";
-      if (codeVarName == null || codeVarName == "")
-        yield return ($"\r\ncodeVarName: {codeVarName} - {memberName}\r\n");
-      yield return codeVarName;
+    foreach(var expressionCode in GenerateExpression(memberLoad.StructExpr, contentOfFunctionName, level))
+      yield return expressionCode;
+    yield return ".";
+    if (codeVarName == null || codeVarName == "")
+      yield return ($"\r\ncodeVarName: {codeVarName} - {memberName}\r\n");
+    yield return codeVarName;
   }
 
   private static IEnumerable<string> GenerateMemberStore(IMemberStore memberStore, string contentOfFunctionName, int level) {
@@ -570,10 +580,22 @@ public static class JavaScriptGenerator {
   }
 
   private static IEnumerable<string> GenerateConstructUnknownSizeArrayCode(IConstructUnknownSizeArray constructUnknownSizeArray, string contentOfFunctionName, int level) {
-    yield return "new Array(";
-    foreach(var expressionCode in GenerateExpression(constructUnknownSizeArray.SizeExpr, contentOfFunctionName, level))
+    yield return "(function(){\r\n";
+
+    yield return "const __size = ";
+      foreach(var expressionCode in GenerateExpression(constructUnknownSizeArray.SizeExpr, contentOfFunctionName, level))
         yield return expressionCode;
-    yield return ")";
+    yield return ";\r\n";
+
+    yield return "const __arr = new Array(__size);\r\n";
+    yield return "for(let __i = 0; i < __size; __i++) {\r\n";
+    yield return "  __arr[i] = ";
+    foreach(var expressionCode in GenerateExpression(constructUnknownSizeArray.GeneratorExpr, contentOfFunctionName, level))
+        yield return expressionCode;   
+    yield return "(__i);\r\n}\r\n";
+
+    yield return "return __arr;";
+    yield return "\r\n})()";
   }
 
   private static IEnumerable<string> GenerateArrayLoad(IArrayLoad arrayLoad, string contentOfFunctionName, int level) {

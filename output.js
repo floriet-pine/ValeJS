@@ -1,4 +1,4 @@
-﻿'use strict';
+'use strict';
 (function(){
   function __ext___addIntInt(a, b) { return ((a|0) + (b|0)) | 0; }
   function __ext___subtractIntInt(a, b) { return ((a|0) - (b|0)) | 0; }
@@ -11,24 +11,19 @@
   function __ext___addStrStr(a, b) { return a + b; }
   function __ext___print(p) { console.log(p); }
 
-  function _addIntInt_0(_addIntInt_0_p_0, _addIntInt_0_p_1) {
-__ext__addIntInt_0(_addIntInt_0_p_0, _addIntInt_0_p_1)  }
-
-  function main_0() {
-    let __blockVar_0;
-    let __blockVar_1;
-    let __blockVar_2;
-            __blockVar_0 = Arr_0(5, Object.create({}, {}));
-            __blockVar_1 = _0(1, 2);
-        __blockVar_2 = __blockVar_0[3];
-                return __blockVar_2;
+  function main() {
+    let a_0;
+    let blockResult0_1;
+            a_0 = Arr(5, Object.create({}, {}));
+        blockResult0_1 = a_0[3];
+            return blockResult0_1;
   }
 
   function IFunction1_2(iFunction1_2_p_0) {
-    return Object.create(_proto_IFunction1_0_AnonSubstruct_0, { : iFunction1_2_p_0,});
+    return Object.create(_proto_IFunction1_AnonSubstruct, { anonSubstructMember0: iFunction1_2_p_0,});
   }
 
-  function immDrop_0(immDrop_0_p_0) {
+  function immDrop(immDrop_p_0) {
             return Object.create({}, {});
   }
 
@@ -41,39 +36,44 @@ __ext__addIntInt_0(_addIntInt_0_p_0, _addIntInt_0_p_1)  }
   }
 
   function _call_2(_call_2_p_0, _call_2_p_1) {
-    return _call_4(_call_2_p_0.
-codeVarName:  - anonSubstructMember0_0
-, _call_2_p_1);
+    return _call_4(_call_2_p_0.anonSubstructMember0, _call_2_p_1);
   }
 
   function _call_5(_call_5_p_0, _call_5_p_1) {
-            return immDrop_0(_call_5_p_1);
+            return immDrop(_call_5_p_1);
   }
 
-  function Arr_0(arr_0_p_0, arr_0_p_1) {
-    let __blockVar_0;
-    let __blockVar_1;
-    let __blockVar_4;
+  function Arr(arr_p_0, arr_p_1) {
+    let n_0;
+    let generator_1;
+    let blockResult1_4;
     let __blockVar_3;
-    let __blockVar_2;
-        __blockVar_0 = arr_0_p_0;
-        __blockVar_1 = arr_0_p_1;
-        __blockVar_4 =         __blockVar_3 = Array_0(__blockVar_0, (function(){        __blockVar_2 = IFunction1_2(__blockVar_1);
-    return __blockVar_2;
+    let tempVarName0_2;
+        n_0 = arr_p_0;
+        generator_1 = arr_p_1;
+        blockResult1_4 =         __blockVar_3 = ValeArray(n_0, (function(){        tempVarName0_2 = IFunction1_2(generator_1);
+    return tempVarName0_2;
 })());
-    destructor_0(__blockVar_2);    return __blockVar_3;
+    destructor(tempVarName0_2);    return __blockVar_3;
 ;
-                return __blockVar_4;
+                return blockResult1_4;
   }
 
-  function Array_0(array_0_p_0, array_0_p_1) {
-    let __blockVar_0;
-    let __blockVar_1;
-    let __blockVar_2;
-        __blockVar_0 = array_0_p_0;
-        __blockVar_1 = array_0_p_1;
-        __blockVar_2 = new Array(__blockVar_0);
-                return __blockVar_2;
+  function ValeArray(valeArray_p_0, valeArray_p_1) {
+    let size_0;
+    let generator_1_1;
+    let blockResult0_2_2;
+        size_0 = valeArray_p_0;
+        generator_1_1 = valeArray_p_1;
+        blockResult0_2_2 = (function(){
+const __size = size_0;
+const __arr = new Array(__size);
+for(let __i = 0; i < __size; __i++) {
+  __arr[i] = generator_1_1(__i);
+}
+return __arr;
+})();
+                return blockResult0_2_2;
   }
 
   function immConcreteDestructor_2(immConcreteDestructor_2_p_0) {
@@ -81,45 +81,55 @@ codeVarName:  - anonSubstructMember0_0
   }
 
   function _call_3(_call_3_p_0, _call_3_p_1) {
-    return _call_5(_call_3_p_0.
-codeVarName:  - anonSubstructMember0_1
-, _call_3_p_1);
+    return _call_5(_call_3_p_0.anonSubstructMember0_1, _call_3_p_1);
   }
 
   function immInterfaceDestructor_1(immInterfaceDestructor_1_p_0) {
-    return immConcreteDestructor_0(immInterfaceDestructor_1_p_0);
+    return immConcreteDestructor(immInterfaceDestructor_1_p_0);
   }
 
-  function immConcreteDestructor_0(immConcreteDestructor_0_p_0) {
+  function immConcreteDestructor(immConcreteDestructor_p_0) {
                     return Object.create({}, {});
   }
 
-  function _call_0(_call_0_p_0, _call_0_p_1) {
-    return _call_0_p_0._ic_IFunction1_0__call_0(_call_0_p_0, _call_0_p_1);
+  function _call(_call_p_0, _call_p_1) {
+    return _call_p_0._ic_IFunction1__call(_call_p_0, _call_p_1);
   }
 
   function immConcreteDestructor_1(immConcreteDestructor_1_p_0) {
             return Object.create({}, {});
   }
 
-  function _0(_0_p_0, _0_p_1) {
-    let __blockVar_0;
-    let __blockVar_1;
-    let __blockVar_2;
-        __blockVar_0 = _0_p_0;
-        __blockVar_1 = _0_p_1;
-        __blockVar_2 = _addIntInt_0(__blockVar_0, __blockVar_1);
-                return __blockVar_2;
-  }
-
   function _call_4(_call_4_p_0, _call_4_p_1) {
-    let __blockVar_0;
-    let __blockVar_1;
-    let __blockVar_2;
-        __blockVar_0 = _call_4_p_0;
-        __blockVar_1 = _call_4_p_1;
-        __blockVar_2 = __blockVar_1;
-                return __blockVar_2;
+    let closure_0;
+    let magicParam_1;
+    let blockResult0_1_2;
+        closure_0 = _call_4_p_0;
+        magicParam_1 = _call_4_p_1;
+        blockResult0_1_2 = magicParam_1;
+                return blockResult0_1_2;
   }
 
-  function constructor_0() {
+  function constructor() {
+    return Object.create(_proto_IFunction1_1_AnonSubstruct_1, { anonSubstructMember0_1: Object.create({}, {}),});
+  }
+
+  function immInterfaceDestructor(immInterfaceDestructor_p_0) {
+    return immInterfaceDestructor_p_0._ic_IFunction1_1_immInterfaceDestructor(immInterfaceDestructor_p_0);
+  }
+
+  function destructor(destructor_p_0) {
+                    return Object.create({}, {});
+  }
+
+const _proto_IFunction1_AnonSubstruct = {
+ _ic_IFunction1__call: _call_2,
+
+};
+const _proto_IFunction1_1_AnonSubstruct_1 = {
+ _ic_IFunction1_1__call_1: _call_3,
+ _ic_IFunction1_1_immInterfaceDestructor: immInterfaceDestructor_1,
+
+};
+  console.log(main());
+})();

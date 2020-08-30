@@ -7,7 +7,7 @@ using System.Linq;
 namespace dev.vale.awesome {
 
   public class Compilifier {
-    private const bool GENERATE_AST = true;
+    private const bool GENERATE_AST = false;
 
     public static void Main() {
       //var valeCode = "fn main() { 42 }";
@@ -110,7 +110,6 @@ namespace dev.vale.awesome {
 
         fn main() {
           a = Arr<imm>(5, {_});
-          c = 1 + 2;
           = a[3];
         }
       ";
@@ -136,7 +135,7 @@ namespace dev.vale.awesome {
       var ast = (IProgram)Json.Deserialize<AstModel>(astJson);
 
       using (var outputFileStream = File.Create("output.js"))
-      using (var outputFileStreamWriter = new StreamWriter(outputFileStream, Encoding.UTF8)) {
+      using (var outputFileStreamWriter = new StreamWriter(outputFileStream, Encoding.ASCII)) {
         foreach (var code in JavaScriptGenerator.Generate(ast)) {
           outputFileStreamWriter.Write(code);
           Console.Write(code);

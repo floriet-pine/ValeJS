@@ -6,6 +6,10 @@ public class NamingHelper {
   private static readonly Regex _externalFunctionNameRegex = new Regex("F\\(\"(?<Name>[a-z_]+)\"", RegexOptions.Compiled | RegexOptions.IgnoreCase);
   private static readonly Regex _cNameRegex = new Regex("C\\(\"(?<Name>[a-z_]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+  private static readonly Dictionary<string, string> collisionAvoidanceRename = new Dictionary<string, string>() {
+    { "Array", "ValeArray" },
+  };
+
   // Manual two-way dictionary
   private Dictionary<string, string> _prettyFunctionNameByAstFunctionName = new Dictionary<string, string>();
   private Dictionary<string, string> _astFunctionNameByPrettyFunctionName = new Dictionary<string, string>();
@@ -93,6 +97,11 @@ public class NamingHelper {
     while (_astFunctionNameByPrettyFunctionName.ContainsKey(prettyFunctionName)) {
       prettyFunctionName = $"{orgPrettyName}_{i}";
     }
+
+    if (collisionAvoidanceRename.TryGetValue(astFunctionName, out var replacedValue)) {
+      prettyFunctionName = replacedValue;
+    }
+
     _prettyFunctionNameByAstFunctionName.Add(astFunctionName, prettyFunctionName);
     _astFunctionNameByPrettyFunctionName.Add(prettyFunctionName, astFunctionName);
     return prettyFunctionName;
