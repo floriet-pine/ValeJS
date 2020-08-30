@@ -11,6 +11,7 @@ public class AstModel : IProgram,
                         IBlock,
                         IReturn,
                         ICall,
+                        IInterfaceCall,
                         IConsecutor,
                         IStackify,
                         IUnstackify,
@@ -19,12 +20,17 @@ public class AstModel : IProgram,
                         IArgument,
                         ILocal,
                         ILocalLoad,
+                        ILocalStore,
                         IVariableId,
                         INewStruct,
                         IConstant,
                         IMemberLoad,
                         IMemberStore,
-                        IIf {
+                        IIf,
+                        IWhile,
+                        INewArrayFromValues,
+                        IArrayLoad,
+                        IConstructUnknownSizeArray {
 
   public string __type { get; set; }
   public string Name { get; set; }
@@ -71,6 +77,7 @@ public class AstModel : IProgram,
   ILocal IStackify.Local => Local;
   ILocal IUnstackify.Local => Local;
   ILocal ILocalLoad.Local => Local;
+  ILocal ILocalStore.Local => Local;
 
   public AstModel Id { get; set; }
   IVariableId ILocal.Id => Id;
@@ -82,6 +89,7 @@ public class AstModel : IProgram,
   public List<AstModel> Exprs { get; set; }
   public AstModel OptName { get; set; }
   public AstModel SourceResultType { get; set; }
+  public AstModel ResultType { get; set; }
 
   public string Value { get; set; }
   public int ArgumentIndex { get; set; }
@@ -92,6 +100,23 @@ public class AstModel : IProgram,
   public AstModel ConditionBlock { get; set; }
   public AstModel ThenBlock { get; set; }
   public AstModel ElseBlock { get; set; }
+  public AstModel BodyBlock { get; set; }
+  IBlock IWhile.BodyBlock => BodyBlock;
+
+  public List<AstModel> Methods { get; set; }
+  public AstModel Override { get; set; }
+  public AstModel InterfaceRef { get; set; }
+  //IPrototype IInterfaceMethod.Override => Override;
+  //public int VirtualParamIndex { get; set; }
+  public AstModel Method { get; set; }
+
+  public AstModel FunctionType { get; set; }
+  IPrototype IInterfaceCall.FunctionType => FunctionType;
+
+  public AstModel ArrayExpr { get; set; }
+  public AstModel IndexExpr { get; set; }
+
+  public AstModel SizeExpr { get; set; }
 }
 
 public interface IExpression {
@@ -114,6 +139,7 @@ public interface IStruct : IExpression {
 public interface IEdge : IExpression {
   IInterfaceId InterfaceName { get; }
   IStructId StructName { get; }
+  List<AstModel> Methods { get; }
 }
 
 public interface IInterfaceId : IExpression {
@@ -155,6 +181,12 @@ public interface ICall : IExpression {
   List<AstModel> ArgExprs { get; }
 }
 
+public interface IInterfaceCall : IExpression {
+  List<AstModel> ArgExprs { get; }
+  IPrototype FunctionType { get; }
+  AstModel InterfaceRef { get; }
+}
+
 public interface IConsecutor : IExpression {
   List<AstModel> Exprs { get; }
 }
@@ -192,10 +224,15 @@ public interface IVariableId : IExpression {
 public interface ILocalLoad : IExpression {
  ILocal Local { get; } 
 }
+public interface ILocalStore : IExpression {
+ ILocal Local { get; } 
+ AstModel SourceExpr { get; }
+}
 
 public interface INewStruct : IExpression {
   List<AstModel> SourceExprs { get; }
   List<string> MemberNames { get; }
+  AstModel ResultType { get; }
 }
 
 public interface IConstant : IExpression {
@@ -210,7 +247,6 @@ public interface IMemberLoad : IExpression {
 public interface IMemberStore : IExpression {
  AstModel SourceExpr { get; }
  AstModel StructExpr { get; }
- //int MemberIndex { get; }
  string MemberName { get; }
 }
 
@@ -218,4 +254,20 @@ public interface IIf : IExpression {
   AstModel ConditionBlock { get; }
   AstModel ThenBlock { get; }
   AstModel ElseBlock { get; }
+}
+public interface IWhile : IExpression {
+  IBlock BodyBlock { get; }
+}
+
+public interface INewArrayFromValues : IExpression {
+  List<AstModel> SourceExprs { get; }
+}
+
+public interface IArrayLoad : IExpression {
+  AstModel ArrayExpr { get; }
+  AstModel IndexExpr { get; }
+}
+
+public interface IConstructUnknownSizeArray : IExpression {
+  AstModel SizeExpr { get; }
 }

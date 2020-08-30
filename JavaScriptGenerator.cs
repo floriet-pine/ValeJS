@@ -1,25 +1,33 @@
 using System;
-using System.IO;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 
+#pragma warning disable 0162
 public static class JavaScriptGenerator {
+  private const string TYPE_CONSECUTOR = "Consecutor";
   private static readonly Regex _validFunctionCharsOnlyRegex = new Regex("^[0-9a-z_]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
   private static readonly Regex _functionNameRegex = new Regex("F\\(\"(?<Name>[a-z_]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
   private static readonly Regex _cNameRegex = new Regex("C\\(\"(?<Name>[a-z_]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
   private static readonly Regex _sIdNameRegex = new Regex("SId\\(\"C\\(\\\\\"(?<Name>[a-z_]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
   private static readonly Regex _codeVarNameRegex = new Regex("CodeVarName\\(\"(?<Name>.+)\"\\)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+  private static readonly Regex _templarBlockResultVarNameRegex = new Regex("TemplarBlockResultVarName\\((?<Number>.+)\\)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
   private static int _tempVarCounter = 0;
   private static readonly HashSet<string> _ignoredDiscardTypes = new HashSet<string>(){ "Unstackify" };
+  private static readonly HashSet<string> _noReturnConsecutorChild = new HashSet<string>(){ "Return", "Stackify", "Destroy" };
 
-  private static Dictionary<string, Dictionary<string, int>> _indexByImplementaionByInterface = new Dictionary<string, Dictionary<string, int>>();
+  private static NamingHelper _namingHelper = null;
+  private static Dictionary<string, string> _protoNameByStructName = new Dictionary<string, string>();
 
   private const bool VERBOSE = false;
   private const bool DEBUG = true;
 
   public static IEnumerable<string> Generate(IProgram program) {
+    _namingHelper = new NamingHelper();
+
     var level = 1;
     yield return "'use strict';\r\n";
     yield return "(function(){\r\n";
@@ -27,15 +35,17 @@ public static class JavaScriptGenerator {
     foreach(var headerCode in CreateHeader())
       yield return headerCode;
 
-    InitImplementationPointers(program);
+    InitPrototypes(program);
 
     foreach(var function in program.Functions) {
       foreach(var functionCode in GenerateFunction(function, null, level))
         yield return functionCode;
     }
 
-    foreach(var implementationPointerCode in CreateImplementationPointers())
-      yield return implementationPointerCode;
+    foreach(var createPrototypesCode in CreatePrototypes(program))
+      yield return createPrototypesCode;
+    //foreach(var implementationPointerCode in CreateImplementationPointers())
+      //yield return implementationPointerCode;
 
     yield return LevelString(level);
     yield return "console.log(main());\r\n";
@@ -47,33 +57,45 @@ public static class JavaScriptGenerator {
   }
 
   private static string GetUniqueVarName() {
-    return $"__temp_{_tempVarCounter++}}";
+    return $"__temp_{_tempVarCounter++}";
   }
 
   private static string ParameterName(string functionName, int argumentIndex) {
-    return $"{functionName}_p_{argumentIndex}";
+    // Make name camelcase-like, to please simple formatters
+    var firstChar = char.ToLowerInvariant(functionName[0]);
+    var restOfFunctionName = new string(functionName.Skip(1).ToArray());
+    return $"{firstChar}{restOfFunctionName}_p_{argumentIndex}";
   }
 
   private static string ExtractCodeVarName(string str) {
     var match = _codeVarNameRegex.Match(str);
     if (match.Success)
       return $"{match.Groups["Name"].Value}";
+
+    match = _templarBlockResultVarNameRegex.Match(str);
+    if (match.Success)
+      return $"_blockResult_{match.Groups["Number"].Value}";
+      
     return null;
   }
 
   private static string ExtractCodeVarName(ILocal local) {
     var number = local.Id.Number;
     var value = local.Id.OptName.Value;
+    //Console.WriteLine($"DEBUG: Could not extract code var name from '{number} - {value} - {value == null}'");
 
-    var codeVarName = ExtractCodeVarName(value);
-    if (codeVarName != null)
-      return $"{codeVarName}_{number}";
+    if (value != null) {
+      var codeVarName = ExtractCodeVarName(value);
+      if (codeVarName != null)
+        return $"{codeVarName}_{number}";
+    }
 
     var numberName = $"__blockVar_{number}";
     return numberName;
   }
 
   private static string CName(string cName) {
+    return _namingHelper.FixCName(cName);
     var match = _cNameRegex.Match(cName);
     if (match.Success)
       return match.Groups["Name"].Value;
@@ -91,7 +113,7 @@ public static class JavaScriptGenerator {
   }
 
   private static string SaneFunctionName(string insaneFunctionName) {
-    return NamingHelper.FixFunction(insaneFunctionName);
+    return _namingHelper.FixFunction(insaneFunctionName);
     var match = _functionNameRegex.Match(insaneFunctionName);
     if (match.Success) {
       return match.Groups["Name"].Value;
@@ -105,35 +127,33 @@ public static class JavaScriptGenerator {
     return "__" + base64Name;
   }
 
-  private static IEnumerable<string> CreateImplementationPointers() {
-    foreach(var kvp in _indexByImplementaionByInterface) {
-      var interfaceName = kvp.Key;
-      var indexByImplementaion = kvp.Value;
-      yield return $"__interfaceImpl_{interfaceName} = {{";
-      foreach (var kvp2 in indexByImplementaion) {
-        var implementationName = kvp2.Key;
-        var index = kvp2.Value;
-        yield return $"{index}: {implementationName}, ";
-      }
-      yield return "};\r\n";
-    }
+
+  private static void InitPrototypes(IProgram program) {
+    foreach (var _ in CreatePrototypes(program)) { }
   }
 
-  private static void InitImplementationPointers(IProgram program) {
-    _indexByImplementaionByInterface.Clear();
+  private static IEnumerable<string> CreatePrototypes(IProgram program) {
+    _protoNameByStructName.Clear();
 
     foreach (var @struct in program.Structs) {
       foreach (var edge in @struct.Edges) {
         var structName = CName(edge.StructName.Name);
         var interfaceName = CName(edge.InterfaceName.Name);
-        if (!_indexByImplementaionByInterface.TryGetValue(interfaceName, out var indexByImplementation)) {
-          indexByImplementation = new Dictionary<string, int>();
-          _indexByImplementaionByInterface.Add(interfaceName, indexByImplementation);
+
+        string protoName = $"_proto_{interfaceName}_{structName}";
+        _protoNameByStructName.Add(structName, protoName);
+        yield return $"const {protoName} = {{\r\n";
+
+        foreach (var entry in edge.Methods) {
+          var @method = entry.Method;
+          var interfaceFunctionName = _namingHelper.FixFunction(@method.Prototype.Name);
+          var overrideName = _namingHelper.FixFunction(entry.Override.Name);
+          yield return $" _ic_{interfaceName}_{interfaceFunctionName}: {overrideName},\r\n";
         }
-        if (!indexByImplementation.ContainsKey(structName))
-          indexByImplementation.Add(structName, indexByImplementation.Count);
+        yield return "\r\n};\r\n";
       }
     }
+    yield break;
   }
 
   private static IEnumerable<string> GenerateFunction(IFunction function, string contentOfFunctionName, int level) {
@@ -166,7 +186,7 @@ public static class JavaScriptGenerator {
     yield return $") {{";
     yield return "\r\n";
 
-    foreach (var blockCode in GenerateExpression(function.Block, saneFunctionName, level + 1)) {
+    foreach (var blockCode in GenerateBlock(function.Block, saneFunctionName, level + 1)) {
       yield return blockCode;
     }
 
@@ -194,17 +214,15 @@ public static class JavaScriptGenerator {
     yield return ";\r\n";
   }
 
-  private static IEnumerable<string> GenerateCall(ICall call, string contentOfFunctionName, int level) {
+  private static IEnumerable<string> GenerateCall(ICall call, string contentOfFunctionName, int level, AstModel parent) {
     //yield return LevelString(level);
     var function = call.Function;
     var saneFunctionName = SaneFunctionName(function.Name);
     yield return saneFunctionName + "(";
 
-    bool first = true;
+    var first = call.ArgExprs.FirstOrDefault();
     foreach (var argExpr in call.ArgExprs) {
-      if (first)
-        first = false;
-      else
+      if (first != argExpr)
         yield return ", ";
 
       foreach(var argExprCode in GenerateExpression(argExpr, contentOfFunctionName, level)) {
@@ -213,11 +231,40 @@ public static class JavaScriptGenerator {
     }
 
     yield return ")";
+    if (parent?.__type == TYPE_CONSECUTOR)
+      yield return ";";
+  }
+
+  private static IEnumerable<string> GenerateInterfaceCall(IInterfaceCall interfaceCall, string contentOfFunctionName, int level, AstModel parent) {
+
+    var methodName = _namingHelper.FixFunction(interfaceCall.FunctionType.Name);
+    var interfaceName = CName(interfaceCall.InterfaceRef.Name);
+    //var interfaceName = CName(interfaceCall.InterfaceRef.Name);
+    var first = interfaceCall.ArgExprs.First();
+
+    foreach(var firstCode in GenerateExpression(first, contentOfFunctionName, level))
+        yield return firstCode;
+    yield return $"._ic_{interfaceName}_{methodName}(";
+
+    var implementationName = first.ResultType.Referend.Name;
+
+    foreach (var argExpr in interfaceCall.ArgExprs) {
+      if (first != argExpr)
+        yield return ", ";
+
+      foreach(var argExprCode in GenerateExpression(argExpr, contentOfFunctionName, level)) {
+        yield return argExprCode;
+      }
+    }
+
+    yield return ")";
+    if (parent?.__type == TYPE_CONSECUTOR)
+      yield return ";";
   }
 
   private static IEnumerable<string> GenerateExternCall(IExternCall externCall, string contentOfFunctionName, int level) {
     var functionName = externCall.Function.Name;
-    var saneFunctionName = SaneFunctionName(functionName);
+    var saneFunctionName = _namingHelper.FixExternalFunction(functionName);
     if (VERBOSE)
       yield return "\r\n//<externCall>\r\n";
     yield return $"__ext_{saneFunctionName}(";
@@ -241,17 +288,21 @@ public static class JavaScriptGenerator {
     if (VERBOSE)
       yield return "\r\n//<consecutor>\r\n";
 
+    var lastExpression = consecutor.Exprs.Last();
+    if (_noReturnConsecutorChild.Contains(lastExpression.__type))
+      lastExpression = null; // Don't treat any ast the last (avoid creating a return)
+
     foreach(var expr in consecutor.Exprs) {
-      bool addedCode = false;
-      foreach(var expressionCode in GenerateExpression(expr, contentOfFunctionName, level, parent: consecutor)) {
-        addedCode = true;
+      yield return LevelString(level);
+      if (expr == lastExpression)
+        yield return "return ";
+
+      foreach(var expressionCode in GenerateExpression(expr, contentOfFunctionName, level, parent: (AstModel)consecutor))
         yield return expressionCode;
-      }
-      if (addedCode)
-        yield return "\r\n";
 
+      if (expr == lastExpression)
+        yield return ";\r\n";
     }
-
     if (VERBOSE)
       yield return "\r\n//</consecutor>\r\n";
   }
@@ -265,7 +316,21 @@ public static class JavaScriptGenerator {
     yield return codeVarName;
   }
 
-  private static IEnumerable<string> GenerateStackify(IStackify stackify, string contentOfFunctionName, int level) {
+  private static IEnumerable<string> GenerateLocalStore(ILocalStore localStore, string contentOfFunctionName, int level, AstModel parent) {
+    if (VERBOSE)
+      yield return "\r\n// <LocalStore>\r\n";
+
+    var local = localStore.Local;
+    var codeVarName = ExtractCodeVarName(local);
+    yield return codeVarName;
+    yield return " = ";
+    foreach(var sourceCode in GenerateExpression(localStore.SourceExpr, contentOfFunctionName, level))
+        yield return sourceCode;
+    if (parent?.__type == TYPE_CONSECUTOR || parent?.__type == "Discard")
+      yield return ";\r\n";
+  }
+
+  private static IEnumerable<string> GenerateStackify(IStackify stackify, string contentOfFunctionName, int level, AstModel parent) {
     
     var local = stackify.Local;
     if (local == null)
@@ -282,7 +347,8 @@ public static class JavaScriptGenerator {
         yield return expressionCode;
     }
 
-    yield return $";";
+    if (parent?.__type == TYPE_CONSECUTOR)
+      yield return $";\r\n";
 
     if (VERBOSE)
       yield return "\r\n//<stackify />\r\n";
@@ -305,9 +371,11 @@ public static class JavaScriptGenerator {
     if (VERBOSE)
       yield return "\r\n//<discard>\r\n";
     
+    yield break; // Testing
+
     yield return LevelString(level);
     if (discard.SourceExpr != null && !_ignoredDiscardTypes.Contains(discard.SourceExpr.__type)) {
-      foreach (var expressionCode in GenerateExpression(discard.SourceExpr, contentOfFunctionName, level)) {
+      foreach (var expressionCode in GenerateExpression(discard.SourceExpr, contentOfFunctionName, level, parent: (AstModel)discard)) {
         yield return expressionCode;
       }
     }
@@ -323,7 +391,7 @@ public static class JavaScriptGenerator {
   }
 
   private static IEnumerable<string> GenerateDestroy(IArgument argument, string contentOfFunctionName, int level) {
-    yield return ParameterName(contentOfFunctionName, argument.ArgumentIndex);
+    //yield return ParameterName(contentOfFunctionName, argument.ArgumentIndex);
     if (VERBOSE)
       yield return "\r\n//<destroy />\r\n";
   }
@@ -337,7 +405,7 @@ public static class JavaScriptGenerator {
       case "ConstantI64":
         yield return constant.Value;
         break;
-      case "ContantStr":
+      case "ConstantStr":
         var jsString = JsHelper.GenerateString(constant.Value);
         yield return jsString;
         break;
@@ -349,53 +417,65 @@ public static class JavaScriptGenerator {
       yield return "\r\n//<if />\r\n";
 
 
-    var isConsecutor = parent != null && parent.__type == "Consecutor";
+    //var isParentConsecutor = parent != null && parent.__type == TYPE_CONSECUTOR;
     var conditionBlock = @if.ConditionBlock;
     var thenBlock = @if.ThenBlock;
     var elseBlock = @if.ElseBlock;
 
-    string tempVarName = null;
-    if (isConsecutor) {
-      tempVarName = GetUniqueVarName();
-      yield return $"let {tempVarName};";
-      yield return "if (";
-    }else{
-      yield return "(";
-    }
-
+    yield return "((";
     foreach(var conditionCode in GenerateExpression(conditionBlock, contentOfFunctionName, level))
       yield return conditionCode;
-
-    if (isConsecutor) {
-      yield return ") {";
-      if (thenBlock.__type == "Consecutor")
-        yield return "";
-    }else{
-      yield return ") ? (";
-    }
-
-    foreach(var thenCode in GenerateExpression(thenBlock, contentOfFunctionName, level))
+    yield return ") ? function(){\r\n";
+    if (thenBlock.InnerExpr.__type != TYPE_CONSECUTOR)
+        yield return "return ";
+    foreach(var thenCode in GenerateExpression(thenBlock, contentOfFunctionName, level + 1))
       yield return thenCode;
+    if (thenBlock.InnerExpr.__type != TYPE_CONSECUTOR)
+      yield return ";";
+    yield return "\r\n} : function(){\r\n";
+    if (elseBlock.InnerExpr.__type != TYPE_CONSECUTOR)
+        yield return "return ";
+    foreach(var elseCode in GenerateExpression(elseBlock, contentOfFunctionName, level + 1))
+      yield return elseCode;
+    if (elseBlock.InnerExpr.__type != TYPE_CONSECUTOR)
+        yield return ";";
+    yield return "\r\n})()";
+  }
 
-    if (elseBlock != null) {
-      yield return ") : (";
-      foreach(var elseCode in GenerateExpression(elseBlock, contentOfFunctionName, level))
-        yield return elseCode;
-    }
-    yield return ")";
+  private static IEnumerable<string> GenerateWhile(IWhile @while, string contentOfFunctionName, int level, AstModel parent) {
+    if (parent?.__type != TYPE_CONSECUTOR)
+      throw new Exception("Does not support while outside a consectutor");
+
+    var @if = @while.BodyBlock.InnerExpr;
+
+    yield return "while (";
+    foreach(var ifCode in GenerateIf(@if, contentOfFunctionName, level, parent: (AstModel)@while))
+      yield return ifCode;
+    yield return ") {}\r\n";
   }
 
   private static IEnumerable<string> GenerateNewStruct(INewStruct newStruct, string contentOfFunctionName, int level) {
     if (VERBOSE)
       yield return "\r\n//<NewStruct />\r\n";
 
-    yield return "{";
+    var fullStructName = newStruct.ResultType.Referend.Name;
+    var structName = CName(fullStructName);
+    if (fullStructName.Contains("\"Tup\"")) {
+      yield return "void(0)"; //undefined
+      yield break;
+    }
+
+    string protoName;
+    if (!_protoNameByStructName.TryGetValue(structName, out protoName))
+      protoName = "{}";
+
+    yield return $"Object.create({protoName}, {{";
 
     for (var i = 0; i < newStruct.MemberNames.Count; i++) {
       var memberName = newStruct.MemberNames[i];
       var sourceExpr = newStruct.SourceExprs[i];
       if (sourceExpr.__type != "Argument")
-        throw new Exception($"Unsupported source expression in NewStruct: {sourceExpr.__type}");
+        throw new Exception($"Unsupported source expression in NewStruct: {sourceExpr.__type}. fullStructName: {fullStructName}");
 
       var argumentIndex = sourceExpr.ArgumentIndex;
       var codeVarName = ExtractCodeVarName(memberName);
@@ -407,7 +487,14 @@ public static class JavaScriptGenerator {
       yield return ",";
     }
 
-    yield return "}";
+    yield return "})";
+  }
+
+  private static IEnumerable<string> GenerateStructToInterfaceUpcast(AstModel structToInterfaceUpcast, string contentOfFunctionName, int level) {
+    if (VERBOSE)
+      yield return $"\r\n//<StructToInterfaceUpcast />\r\n";
+      foreach(var expressionCode in GenerateExpression(structToInterfaceUpcast.SourceExpr, contentOfFunctionName, level))
+        yield return expressionCode;
   }
 
   private static IEnumerable<string> GenerateMemberLoad(IMemberLoad memberLoad, string contentOfFunctionName, int level) {
@@ -438,17 +525,50 @@ public static class JavaScriptGenerator {
       foreach(var expressionCode in GenerateExpression(memberStore.SourceExpr, contentOfFunctionName, level))
         yield return expressionCode;
       yield return ";";
-
   }
 
-  private static IEnumerable<string> GenerateExpression(AstModel astModel, string contentOfFunctionName, int level, AstModel parent) {
+  private static IEnumerable<string> GenerateNewArrayFromValues(INewArrayFromValues newArrayFromValues, string contentOfFunctionName, int level) {
+    yield return "[";
+
+    var first = newArrayFromValues.SourceExprs.FirstOrDefault();
+    foreach(var sourceExpr in newArrayFromValues.SourceExprs) {
+      if (sourceExpr != first)
+        yield return ", ";
+      foreach(var expressionCode in GenerateExpression(sourceExpr, contentOfFunctionName, level))
+        yield return expressionCode;
+    }
+    yield return "]";
+  }
+
+  private static IEnumerable<string> GenerateConstructUnknownSizeArrayCode(IConstructUnknownSizeArray constructUnknownSizeArray, string contentOfFunctionName, int level) {
+    yield return "new Array(";
+    foreach(var expressionCode in GenerateExpression(constructUnknownSizeArray.SizeExpr, contentOfFunctionName, level))
+        yield return expressionCode;
+    yield return ")";
+  }
+
+  private static IEnumerable<string> GenerateArrayLoad(IArrayLoad arrayLoad, string contentOfFunctionName, int level) {
+    foreach (var arrayExprCode in GenerateExpression(arrayLoad.ArrayExpr, contentOfFunctionName, level))
+      yield return arrayExprCode;
+    yield return "[";
+    foreach (var indexExprCode in GenerateExpression(arrayLoad.IndexExpr, contentOfFunctionName, level))
+      yield return indexExprCode;
+    yield return "]";
+  }
+  
+
+  private static IEnumerable<string> GenerateExpression(AstModel astModel, string contentOfFunctionName, int level, AstModel parent = null) {
     if (astModel == null)
       throw new Exception("No AST model");
 
     switch (astModel.__type) {
       case "Call":
-        foreach (var callCode in GenerateCall(astModel, contentOfFunctionName, level))
+        foreach (var callCode in GenerateCall(astModel, contentOfFunctionName, level, parent))
           yield return callCode;
+        break;
+      case "InterfaceCall":
+        foreach (var interfaceCallCode in GenerateInterfaceCall(astModel, contentOfFunctionName, level, parent))
+          yield return interfaceCallCode;
         break;
       case "ExternCall":
         foreach (var externCallCode in GenerateExternCall(astModel, contentOfFunctionName, level))
@@ -463,7 +583,7 @@ public static class JavaScriptGenerator {
           yield return consecutorCode;
         break;
       case "Stackify":
-        foreach (var stackifyCode in GenerateStackify(astModel, contentOfFunctionName, level))
+        foreach (var stackifyCode in GenerateStackify(astModel, contentOfFunctionName, level, parent))
           yield return stackifyCode;
         break;
       case "Unstackify":
@@ -473,6 +593,10 @@ public static class JavaScriptGenerator {
       case "LocalLoad":
         foreach (var localLoadCode in GenerateLocalLoad(astModel, contentOfFunctionName, level))
           yield return localLoadCode;
+        break;
+      case "LocalStore":
+        foreach (var localStoreCode in GenerateLocalStore(astModel, contentOfFunctionName, level, parent))
+          yield return localStoreCode;
         break;
       case "Discard":
         foreach (var discardCode in GenerateDiscard(astModel, contentOfFunctionName, level))
@@ -512,6 +636,31 @@ public static class JavaScriptGenerator {
         foreach (var ifCode in GenerateIf(astModel, contentOfFunctionName, level, parent))
           yield return ifCode;
         break;
+     case "While":
+        foreach (var whileCode in GenerateWhile(astModel, contentOfFunctionName, level, parent))
+          yield return whileCode;
+        break;
+      case "StructToInterfaceUpcast":
+        foreach (var structToInterfaceUpcastCode in GenerateStructToInterfaceUpcast(astModel, contentOfFunctionName, level))
+          yield return structToInterfaceUpcastCode;
+        break;
+      case "NewArrayFromValues":
+        foreach (var newArrayFromValuesCode in GenerateNewArrayFromValues(astModel, contentOfFunctionName, level))
+          yield return newArrayFromValuesCode;
+        break;
+      case "KnownSizeArrayLoad":
+      case "UnknownSizeArrayLoad":
+        foreach (var arrayLoadCode in GenerateArrayLoad(astModel, contentOfFunctionName, level))
+          yield return arrayLoadCode;
+        break;
+      case "DestroyKnownSizeArray":
+      case "DestroyUnknownSizeArray":
+        // Do nothing
+        break;
+      case "ConstructUnknownSizeArray":
+        foreach (var constructUnknownSizeArrayCode in GenerateConstructUnknownSizeArrayCode(astModel, contentOfFunctionName, level))
+          yield return constructUnknownSizeArrayCode;
+        break;
       default:
         yield return $"\r\n//<UNSUPPORTED {astModel.__type} />\r\n";
         //throw new Exception("Unsupported __type: " + astModel.__type);
@@ -524,6 +673,12 @@ public static class JavaScriptGenerator {
     yield return "  function __ext___addIntInt(a, b) { return ((a|0) + (b|0)) | 0; }\r\n";
     yield return "  function __ext___subtractIntInt(a, b) { return ((a|0) - (b|0)) | 0; }\r\n";
     yield return "  function __ext___multiplyIntInt(a, b) { return Math.imul(a|0, b|0) | 0; }\r\n";
+    yield return "  function __ext___lessThanInt(a, b) { return (a|0) < (b|0); }\r\n";
+    yield return "  function __ext___lessThanIntOrEqInt(a, b) { return (a|0) <= (b|0); }\r\n";
+    yield return "  function __ext___greaterThanInt(a, b) { return (a|0) > (b|0); }\r\n";
+    yield return "  function __ext___greaterThanOrEqInt(a, b) { return (a|0) >= (b|0); }\r\n";
+    yield return "  function __ext___eqIntInt(a, b) { return (a|0) === (b|0); }\r\n";
+    
 
     // string
     yield return "  function __ext___addStrStr(a, b) { return a + b; }\r\n";
