@@ -322,7 +322,7 @@ public static class JavaScriptGenerator {
       yield return "(function(){";
     foreach(var expr in consecutor.Exprs) {
       yield return LevelString(level);
-      if (expr == lastExpression && parent?.__type == TYPE_RETURN)
+      if (expr == lastExpression/* && parent?.__type == TYPE_RETURN*/)
         yield return "return ";
 
       foreach(var expressionCode in GenerateExpression(expr, contentOfFunctionName, level, parent: (AstModel)consecutor))
@@ -754,7 +754,10 @@ public static class JavaScriptGenerator {
     yield return "  function __ext___greaterThanInt(a, b) { return (a|0) > (b|0); }\r\n";
     yield return "  function __ext___greaterThanOrEqInt(a, b) { return (a|0) >= (b|0); }\r\n";
     yield return "  function __ext___eqIntInt(a, b) { return (a|0) === (b|0); }\r\n";
+
+    
     yield return "  function __ext___and(a, b) { return !!a && !!b; }\r\n";
+    yield return "  function __ext___not(a, b) { return a !== b; }\r\n";
     
 
     // string
@@ -762,7 +765,7 @@ public static class JavaScriptGenerator {
 
     // misc
     yield return "  function __ext___print(p) { console.log(p); }\r\n";
-    yield return "  function __ext___getch() { while (true) { const result = window.promt('Press a key'); if (typeof result === 'string' && result.length !== 0) { return result[0]; } } }";
+    yield return "  function __ext___getch() { while (true) { const result = window.prompt('Press a key'); if (typeof result === 'string' && result.length !== 0) { return result[0]; } } }";
 
     yield return "\r\n";
   }

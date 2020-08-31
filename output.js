@@ -11,11 +11,11 @@
   function __ext___and(a, b) { return !!a && !!b; }
   function __ext___addStrStr(a, b) { return a + b; }
   function __ext___print(p) { console.log(p); }
-  function __ext___getch() { while (true) { const result = window.promt('Press a key'); if (typeof result === 'string' && result.length !== 0) { return result[0]; } } }
+  function __ext___getch() { while (true) { const result = window.prompt('Press a key'); if (typeof result === 'string' && result.length !== 0) { return result[0]; } } }
   function makeBoard() {
     let funcResult_1_0;
     return             funcResult_1_0 = Arr(10, Object.create({}, {}));
-      funcResult_1_0;
+      return funcResult_1_0;
 ;
   }
 
@@ -72,27 +72,27 @@
                   newPlayerCol_6 = playerCol_2_2;
       (($61_$61_(key_4, 81)) ? function(){
                 running_3 = false;
-        void(0);
+        return void(0);
 
 } : function(){
 return (($61_$61_(key_4, 119)) ? function(){
                     newPlayerRow_5 = $45_(newPlayerRow_5, 1);
-          void(0);
+          return void(0);
 
 } : function(){
 return (($61_$61_(key_4, 115)) ? function(){
                         newPlayerRow_5 = $43_(newPlayerRow_5, 1);
-            void(0);
+            return void(0);
 
 } : function(){
 return (($61_$61_(key_4, 97)) ? function(){
                             newPlayerCol_6 = $45_(newPlayerCol_6, 1);
-              void(0);
+              return void(0);
 
 } : function(){
 return (($61_$61_(key_4, 100)) ? function(){
                                 newPlayerCol_6 = $43_(newPlayerCol_6, 1);
-                void(0);
+                return void(0);
 
 } : function(){
 return void(0);
@@ -110,19 +110,19 @@ return void(0);
         (($61_$61__1(board_0[newPlayerRow_5][newPlayerCol_6], '.')) ? function(){
                     playerRow_2_1 = newPlayerRow_5;
                     playerCol_2_2 = newPlayerCol_6;
-          void(0);
+          return void(0);
 
 } : function(){
 return void(0);
 })()
-        void(0);
+        return void(0);
 
 } : function(){
 return void(0);
 })()
             blockResult0_8 = void(0);
-                              blockResult0_8;
-      true;
+                              return blockResult0_8;
+      return true;
 
 } : function(){
 return false;
@@ -145,9 +145,9 @@ return false;
         n_1_0 = arr_1_p_0;
         generator_1_1 = arr_1_p_1;
         blockResult1_2_4 =         __blockVar_3 = Array_1(n_1_0, (function(){        tempVarName0_1_2 = IFunction1_5(generator_1_1);
-    tempVarName0_1_2;
+    return tempVarName0_1_2;
 })());
-    destructor_2(tempVarName0_1_2);    __blockVar_3;
+    destructor_2(tempVarName0_1_2);    return __blockVar_3;
 ;
                 return blockResult1_2_4;
   }
@@ -181,7 +181,7 @@ return false;
   }
 
   function immConcreteDestructor_3(immConcreteDestructor_3_p_0) {
-            ;
+            return ;
                 return void(0);
   }
 
@@ -201,7 +201,7 @@ return false;
             charToPrint_3 = cell_2;
     ((and($61_$61_(closure_1_0.rowI, closure_1_0.playerRow_1), $61_$61_(cellI_1, closure_1_0.playerCol_1))) ? function(){
             charToPrint_3 = '@';
-      void(0);
+      return void(0);
 
 } : function(){
 return void(0);
@@ -266,27 +266,27 @@ return void(0);
                   key_1_0 = __getch();
       (($61_$61_(key_1_0, 81)) ? function(){
                 done_1 = true;
-        void(0);
+        return void(0);
 
 } : function(){
 return (($61_$61_(key_1_0, 119)) ? function(){
                     done_1 = true;
-          void(0);
+          return void(0);
 
 } : function(){
 return (($61_$61_(key_1_0, 115)) ? function(){
                         done_1 = true;
-            void(0);
+            return void(0);
 
 } : function(){
 return (($61_$61_(key_1_0, 97)) ? function(){
                             done_1 = true;
-              void(0);
+              return void(0);
 
 } : function(){
 return (($61_$61_(key_1_0, 100)) ? function(){
                                 done_1 = true;
-                void(0);
+                return void(0);
 
 } : function(){
 return (($61_$61_(key_1_0, 10)) ? function(){
@@ -304,15 +304,15 @@ return void(0);
 })()
 ;
 })()
-      void(0);
-      true;
+      return void(0);
+      return true;
 
 } : function(){
 return false;
 })()
 ) {}
         return             funcResult_2 = key_1_0;
-                  funcResult_2;
+                  return funcResult_2;
 ;
   }
 
@@ -333,9 +333,9 @@ return false;
         n_0 = arr_p_0;
         generator_1 = arr_p_1;
         blockResult1_1_4 =         __blockVar_3 = ValeArray(n_0, (function(){        tempVarName0_2 = IFunction1_4(generator_1);
-    tempVarName0_2;
+    return tempVarName0_2;
 })());
-    destructor_1(tempVarName0_2);    __blockVar_3;
+    destructor_1(tempVarName0_2);    return __blockVar_3;
 ;
                 return blockResult1_1_4;
   }
@@ -385,7 +385,7 @@ return false;
   }
 
   function immConcreteDestructor_2(immConcreteDestructor_2_p_0) {
-            ;
+            return ;
                     return void(0);
   }
 
@@ -449,8 +449,8 @@ return __arr;
             l_1_3 = len_1(arr_1_0);
     while ((($60_(i_1_2, l_1_3)) ? function(){
             __call_9(func_1_1, i_1_2, arr_1_0[i_1_2]);            i_1_2 = $43_(i_1_2, 1);
-      void(0);
-      true;
+      return void(0);
+      return true;
 
 } : function(){
 return false;
@@ -526,8 +526,8 @@ return __arr;
             l_3 = len(arr_0);
     while ((($60_(i_2, l_3)) ? function(){
             __call_8(func_1, i_2, arr_0[i_2]);            i_2 = $43_(i_2, 1);
-      void(0);
-      true;
+      return void(0);
+      return true;
 
 } : function(){
 return false;
@@ -615,7 +615,7 @@ return '.';
         playerCol_3_2 = display_p_2;
             toPrint_2_3 = Object.create({}, { __boxee: { value: '', },});
     eachI(board_1_0, Object.create({}, { toPrint: { value: toPrint_2_3, }, playerRow: { value: playerRow_3_1, }, playerCol: { value: playerCol_3_2, },}));    print(toPrint_2_3.__boxee_1);        blockResult0_1_4 = void(0);
-                __blockVar_5;
+                return __blockVar_5;
                     return blockResult0_1_4;
   }
 
