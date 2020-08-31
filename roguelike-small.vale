@@ -164,19 +164,19 @@ fn main() int {
       mut newPlayerCol = newPlayerCol + 1;
     }
 
-    killedGoblin! = false;
+    // killedGoblin! = false;
     // goblins.keys().each((key){
     //   if (goblinAt?(&goblins, key, newPlayerRow, newPlayerCol)) {
     //     goblins.remove(key);
     //     mut killedGoblin = true;
     //   }
     // });
-    if (not killedGoblin) {
+    // if (not killedGoblin) {
       if (board[newPlayerRow][newPlayerCol] == ".") {
         mut playerRow = newPlayerRow;
         mut playerCol = newPlayerCol;
       }
-    }
+    // }
   }
   = 0;
 }
