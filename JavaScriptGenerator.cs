@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 #pragma warning disable 0162
 public static class JavaScriptGenerator {
   private const string TYPE_CONSECUTOR = "Consecutor";
+  private const string TYPE_RETURN = "Result";
   private static readonly Regex _validFunctionCharsOnlyRegex = new Regex("^[0-9a-z_]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
   private static readonly Regex _functionNameRegex = new Regex("F\\(\"(?<Name>[a-z_]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
   private static readonly Regex _cNameRegex = new Regex("C\\(\"(?<Name>[a-z_]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -18,7 +19,7 @@ public static class JavaScriptGenerator {
   private static readonly Regex _tupRegex = new Regex("^Tup\\d+$", RegexOptions.Compiled);
 
   private static int _tempVarCounter = 0;
-  private static readonly HashSet<string> _ignoredDiscardTypes = new HashSet<string>(){ "Unstackify" };
+  private static readonly HashSet<string> _ignoredDiscardTypes = new HashSet<string>(){ "Unstackify", "Argument" };
   private static readonly HashSet<string> _noReturnConsecutorChild = new HashSet<string>(){ "Return", "Stackify", "Destroy" };
   private static readonly HashSet<string> _anonymousVarNames = new HashSet<string>(){ "AnonymousSubstructMemberName", "TemplarTemporaryVarName", "TemplarBlockResultVarName", };
 
@@ -233,7 +234,7 @@ public static class JavaScriptGenerator {
   private static IEnumerable<string> GenerateReturn(IReturn @return, string contentOfFunctionName, int level) {
     yield return LevelString(level);
     yield return "return ";
-    foreach(var expressionCode in GenerateExpression(@return.SourceExpr, contentOfFunctionName, level + 1)) {
+    foreach(var expressionCode in GenerateExpression(@return.SourceExpr, contentOfFunctionName, level + 1, parent: (AstModel)@return)) {
         yield return expressionCode;
     }
     yield return ";\r\n";
@@ -321,7 +322,7 @@ public static class JavaScriptGenerator {
       yield return "(function(){";
     foreach(var expr in consecutor.Exprs) {
       yield return LevelString(level);
-      if (expr == lastExpression)
+      if (expr == lastExpression && parent?.__type == TYPE_RETURN)
         yield return "return ";
 
       foreach(var expressionCode in GenerateExpression(expr, contentOfFunctionName, level, parent: (AstModel)consecutor))
@@ -408,11 +409,13 @@ public static class JavaScriptGenerator {
     if (VERBOSE)
       yield return "\r\n//<discard>\r\n";
     
-    yield return LevelString(level);
     if (discard.SourceExpr != null && !_ignoredDiscardTypes.Contains(discard.SourceExpr.__type)) {
+      //yield return "(function(){\r\n";
+      yield return LevelString(level);
       foreach (var expressionCode in GenerateExpression(discard.SourceExpr, contentOfFunctionName, level, parent: (AstModel)discard)) {
         yield return expressionCode;
       }
+      //yield return "\r\n})();\r\n";
     }
 
     if (VERBOSE)

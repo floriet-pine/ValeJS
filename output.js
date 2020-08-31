@@ -11,16 +11,16 @@
   function __ext___and(a, b) { return !!a && !!b; }
   function __ext___addStrStr(a, b) { return a + b; }
   function __ext___print(p) { console.log(p); }
-
+  function __ext___getch() { while (true) { const result = window.promt('Press a key'); if (typeof result === 'string' && result.length !== 0) { return result[0]; } } }
   function makeBoard() {
     let funcResult_1_0;
     return             funcResult_1_0 = Arr(10, Object.create({}, {}));
-      return funcResult_1_0;
+      funcResult_1_0;
 ;
   }
 
   function immConcreteDestructor_1(immConcreteDestructor_1_p_0) {
-                        return void(0);
+                    return void(0);
   }
 
   function __call_8(__call_8_p_0, __call_8_p_1, __call_8_p_2) {
@@ -32,7 +32,7 @@
         rowI_1_1 = __call_8_p_1;
         row_1_2 = __call_8_p_2;
     eachI_1(row_1_2, Object.create({}, { rowI: { value: rowI_1_1, }, playerRow_1: { value: closure_0.playerRow, }, playerCol_1: { value: closure_0.playerCol, }, toPrint_1: { value: closure_0.toPrint, },}));        closure_0.toPrint.__boxee_2 = $43__1(closure_0.toPrint.__boxee_2, '\n');        blockResult0_3_3 = void(0);
-                                return blockResult0_3_3;
+                    return blockResult0_3_3;
   }
 
   function __addIntInt(__addIntInt_p_0, __addIntInt_p_1) {
@@ -48,7 +48,7 @@
     let blockResult0_6_1;
         arr_2_0 = len_1_p_0;
         blockResult0_6_1 = arr_2_0.length;
-                return blockResult0_6_1;
+            return blockResult0_6_1;
   }
 
   function main() {
@@ -72,27 +72,27 @@
                   newPlayerCol_6 = playerCol_2_2;
       (($61_$61_(key_4, 81)) ? function(){
                 running_3 = false;
-        return void(0);
+        void(0);
 
 } : function(){
 return (($61_$61_(key_4, 119)) ? function(){
                     newPlayerRow_5 = $45_(newPlayerRow_5, 1);
-          return void(0);
+          void(0);
 
 } : function(){
 return (($61_$61_(key_4, 115)) ? function(){
                         newPlayerRow_5 = $43_(newPlayerRow_5, 1);
-            return void(0);
+            void(0);
 
 } : function(){
 return (($61_$61_(key_4, 97)) ? function(){
                             newPlayerCol_6 = $45_(newPlayerCol_6, 1);
-              return void(0);
+              void(0);
 
 } : function(){
 return (($61_$61_(key_4, 100)) ? function(){
                                 newPlayerCol_6 = $43_(newPlayerCol_6, 1);
-                return void(0);
+                void(0);
 
 } : function(){
 return void(0);
@@ -110,26 +110,26 @@ return void(0);
         (($61_$61__1(board_0[newPlayerRow_5][newPlayerCol_6], '.')) ? function(){
                     playerRow_2_1 = newPlayerRow_5;
                     playerCol_2_2 = newPlayerCol_6;
-          return void(0);
+          void(0);
 
 } : function(){
 return void(0);
 })()
-        return void(0);
+        void(0);
 
 } : function(){
 return void(0);
 })()
             blockResult0_8 = void(0);
-                                                      return blockResult0_8;
-      return true;
+                              blockResult0_8;
+      true;
 
 } : function(){
 return false;
 })()
 ) {}
         blockResult1_4 = 0;
-                            destructor(board_0);        return blockResult1_4;
+                destructor(board_0);        return blockResult1_4;
   }
 
   function immConcreteDestructor_7(immConcreteDestructor_7_p_0) {
@@ -145,11 +145,11 @@ return false;
         n_1_0 = arr_1_p_0;
         generator_1_1 = arr_1_p_1;
         blockResult1_2_4 =         __blockVar_3 = Array_1(n_1_0, (function(){        tempVarName0_1_2 = IFunction1_5(generator_1_1);
-    return tempVarName0_1_2;
+    tempVarName0_1_2;
 })());
-    destructor_2(tempVarName0_1_2);    return __blockVar_3;
+    destructor_2(tempVarName0_1_2);    __blockVar_3;
 ;
-                        return blockResult1_2_4;
+                return blockResult1_2_4;
   }
 
   function drop(drop_p_0) {
@@ -158,10 +158,10 @@ return false;
 
   function not(not_p_0) {
     let output_0;
-    let blockResult0_10_1;
+    let blockResult0_11_1;
         output_0 = not_p_0;
-        blockResult0_10_1 = __not(output_0);
-                return blockResult0_10_1;
+        blockResult0_11_1 = __not(output_0);
+            return blockResult0_11_1;
   }
 
   function __eqIntInt(__eqIntInt_p_0, __eqIntInt_p_1) {
@@ -173,7 +173,7 @@ return false;
   }
 
   function immDrop(immDrop_p_0) {
-        immDrop_p_0        return void(0);
+            return void(0);
   }
 
   function constructor_1() {
@@ -181,12 +181,12 @@ return false;
   }
 
   function immConcreteDestructor_3(immConcreteDestructor_3_p_0) {
-            return     ;
-                        return void(0);
+            ;
+                return void(0);
   }
 
   function immConcreteDestructor(immConcreteDestructor_p_0) {
-                        return void(0);
+                    return void(0);
   }
 
   function __call_9(__call_9_p_0, __call_9_p_1, __call_9_p_2) {
@@ -201,13 +201,13 @@ return false;
             charToPrint_3 = cell_2;
     ((and($61_$61_(closure_1_0.rowI, closure_1_0.playerRow_1), $61_$61_(cellI_1, closure_1_0.playerCol_1))) ? function(){
             charToPrint_3 = '@';
-      return void(0);
+      void(0);
 
 } : function(){
 return void(0);
 })()
         closure_1_0.toPrint_1.__boxee_3 = $43__1(closure_1_0.toPrint_1.__boxee_3, charToPrint_3);        blockResult0_5_4 = void(0);
-                                        return blockResult0_5_4;
+                        return blockResult0_5_4;
   }
 
   function __call_1(__call_1_p_0, __call_1_p_1) {
@@ -221,7 +221,7 @@ return void(0);
         left_2_0 = $60__p_0;
         right_2_1 = $60__p_1;
         blockResult0_16_2 = __lessThanInt(left_2_0, right_2_1);
-                        return blockResult0_16_2;
+                return blockResult0_16_2;
   }
 
   function __getch() {
@@ -235,7 +235,7 @@ return void(0);
         left_1_0 = and_p_0;
         right_1_1 = and_p_1;
         blockResult0_15_2 = __and(left_1_0, right_1_1);
-                        return blockResult0_15_2;
+                return blockResult0_15_2;
   }
 
   function constructor() {
@@ -249,7 +249,7 @@ return void(0);
         left_3_0 = $61_$61__1_p_0;
         right_3_1 = $61_$61__1_p_1;
         blockResult0_19_2 = __eqStrStr(left_3_0, right_3_1);
-                        return blockResult0_19_2;
+                return blockResult0_19_2;
   }
 
   function __call_4(__call_4_p_0, __call_4_p_1) {
@@ -258,39 +258,36 @@ return void(0);
 
   function inputKey() {
     let key_1_0;
-    let funcResult_1;
+    let done_1;
+    let funcResult_2;
             key_1_0 = 0;
-    while (((true) ? function(){
+            done_1 = false;
+    while (((not(done_1)) ? function(){
                   key_1_0 = __getch();
       (($61_$61_(key_1_0, 81)) ? function(){
-return         return                     funcResult_1 = key_1_0;
-                              return funcResult_1;
-;
-;
+                done_1 = true;
+        void(0);
+
 } : function(){
 return (($61_$61_(key_1_0, 119)) ? function(){
-return           return                         funcResult_1 = key_1_0;
-                                    return funcResult_1;
-;
-;
+                    done_1 = true;
+          void(0);
+
 } : function(){
 return (($61_$61_(key_1_0, 115)) ? function(){
-return             return                             funcResult_1 = key_1_0;
-                                          return funcResult_1;
-;
-;
+                        done_1 = true;
+            void(0);
+
 } : function(){
 return (($61_$61_(key_1_0, 97)) ? function(){
-return               return                                 funcResult_1 = key_1_0;
-                                                return funcResult_1;
-;
-;
+                            done_1 = true;
+              void(0);
+
 } : function(){
 return (($61_$61_(key_1_0, 100)) ? function(){
-return                 return                                     funcResult_1 = key_1_0;
-                                                      return funcResult_1;
-;
-;
+                                done_1 = true;
+                void(0);
+
 } : function(){
 return (($61_$61_(key_1_0, 10)) ? function(){
 return void(0);
@@ -307,14 +304,16 @@ return void(0);
 })()
 ;
 })()
-      return void(0);
-      return true;
+      void(0);
+      true;
 
 } : function(){
 return false;
 })()
 ) {}
-    return __panic();;
+        return             funcResult_2 = key_1_0;
+                  funcResult_2;
+;
   }
 
   function __call_2(__call_2_p_0, __call_2_p_1) {
@@ -334,15 +333,15 @@ return false;
         n_0 = arr_p_0;
         generator_1 = arr_p_1;
         blockResult1_1_4 =         __blockVar_3 = ValeArray(n_0, (function(){        tempVarName0_2 = IFunction1_4(generator_1);
-    return tempVarName0_2;
+    tempVarName0_2;
 })());
-    destructor_1(tempVarName0_2);    return __blockVar_3;
+    destructor_1(tempVarName0_2);    __blockVar_3;
 ;
-                        return blockResult1_1_4;
+                return blockResult1_1_4;
   }
 
   function immConcreteDestructor_6(immConcreteDestructor_6_p_0) {
-                        return void(0);
+                    return void(0);
   }
 
   function $43__1($43__1_p_0, $43__1_p_1) {
@@ -352,11 +351,11 @@ return false;
         a_0 = $43__1_p_0;
         b_1 = $43__1_p_1;
         blockResult0_13_2 = __addStrStr(a_0, b_1);
-                        return blockResult0_13_2;
+                return blockResult0_13_2;
   }
 
   function __call_12(__call_12_p_0, __call_12_p_1) {
-        __call_12_p_0        return drop(__call_12_p_1);
+            return drop(__call_12_p_1);
   }
 
   function __call_5(__call_5_p_0, __call_5_p_1) {
@@ -370,11 +369,11 @@ return false;
   function $45_($45__p_0, $45__p_1) {
     let left_0;
     let right_1;
-    let blockResult0_11_2;
+    let blockResult0_10_2;
         left_0 = $45__p_0;
         right_1 = $45__p_1;
-        blockResult0_11_2 = __subtractIntInt(left_0, right_1);
-                        return blockResult0_11_2;
+        blockResult0_10_2 = __subtractIntInt(left_0, right_1);
+                return blockResult0_10_2;
   }
 
   function __eqStrStr(__eqStrStr_p_0, __eqStrStr_p_1) {
@@ -386,8 +385,8 @@ return false;
   }
 
   function immConcreteDestructor_2(immConcreteDestructor_2_p_0) {
-            return     ;
-                                return void(0);
+            ;
+                    return void(0);
   }
 
   function $43_($43__p_0, $43__p_1) {
@@ -397,11 +396,11 @@ return false;
         a_1_0 = $43__p_0;
         b_1_1 = $43__p_1;
         blockResult0_14_2 = __addIntInt(a_1_0, b_1_1);
-                        return blockResult0_14_2;
+                return blockResult0_14_2;
   }
 
   function destructor_1(destructor_1_p_0) {
-                        return void(0);
+                    return void(0);
   }
 
   function __addStrStr(__addStrStr_p_0, __addStrStr_p_1) {
@@ -410,10 +409,6 @@ return false;
 
   function __call_7(__call_7_p_0, __call_7_p_1) {
     return __call_12(__call_7_p_0.anonSubstructMember0_3, __call_7_p_1);
-  }
-
-  function __panic() {
-    return __ext___panic();
   }
 
   function destructor(destructor_p_0) {
@@ -435,7 +430,7 @@ for(let __i = 0; __i < __size; __i++) {
 }
 return __arr;
 })();
-                        return blockResult0_17_2;
+                return blockResult0_17_2;
   }
 
   function __lessThanInt(__lessThanInt_p_0, __lessThanInt_p_1) {
@@ -454,15 +449,15 @@ return __arr;
             l_1_3 = len_1(arr_1_0);
     while ((($60_(i_1_2, l_1_3)) ? function(){
             __call_9(func_1_1, i_1_2, arr_1_0[i_1_2]);            i_1_2 = $43_(i_1_2, 1);
-      return void(0);
-      return true;
+      void(0);
+      true;
 
 } : function(){
 return false;
 })()
 ) {}
         blockResult0_4_4 = void(0);
-                                        return blockResult0_4_4;
+                        return blockResult0_4_4;
   }
 
   function Array_1(array_1_p_0, array_1_p_1) {
@@ -480,7 +475,7 @@ for(let __i = 0; __i < __size; __i++) {
 }
 return __arr;
 })();
-                        return blockResult0_18_2;
+                return blockResult0_18_2;
   }
 
   function __call_10(__call_10_p_0, __call_10_p_1) {
@@ -490,7 +485,7 @@ return __arr;
         closure_2_0 = __call_10_p_0;
         row_2_1 = __call_10_p_1;
         blockResult0_8_2 = Arr_1(10, Object.create({}, { row: { value: row_2_1, },}));
-                        return blockResult0_8_2;
+                return blockResult0_8_2;
   }
 
   function IFunction1_4(iFunction1_4_p_0) {
@@ -508,7 +503,7 @@ return __arr;
         left_4_0 = $61_$61__p_0;
         right_4_1 = $61_$61__p_1;
         blockResult0_20_2 = __eqIntInt(left_4_0, right_4_1);
-                        return blockResult0_20_2;
+                return blockResult0_20_2;
   }
 
   function print(print_p_0) {
@@ -516,7 +511,7 @@ return __arr;
     let blockResult0_12_1;
         output_1_0 = print_p_0;
         blockResult0_12_1 = __print(output_1_0);
-                return blockResult0_12_1;
+            return blockResult0_12_1;
   }
 
   function eachI(eachI_p_0, eachI_p_1) {
@@ -531,15 +526,15 @@ return __arr;
             l_3 = len(arr_0);
     while ((($60_(i_2, l_3)) ? function(){
             __call_8(func_1, i_2, arr_0[i_2]);            i_2 = $43_(i_2, 1);
-      return void(0);
-      return true;
+      void(0);
+      true;
 
 } : function(){
 return false;
 })()
 ) {}
         blockResult0_2_4 = void(0);
-                                        return blockResult0_2_4;
+                        return blockResult0_2_4;
   }
 
   function len(len_p_0) {
@@ -547,7 +542,7 @@ return false;
     let blockResult0_7_1;
         arr_3_0 = len_p_0;
         blockResult0_7_1 = arr_3_0.length;
-                return blockResult0_7_1;
+            return blockResult0_7_1;
   }
 
   function destructor_3(destructor_3_p_0) {
@@ -563,7 +558,7 @@ return false;
   }
 
   function destructor_2(destructor_2_p_0) {
-                        return void(0);
+                    return void(0);
   }
 
   function immInterfaceDestructor(immInterfaceDestructor_p_0) {
@@ -605,7 +600,7 @@ return '.';
 ;
 })()
 ;
-                        return blockResult0_9_2;
+                return blockResult0_9_2;
   }
 
   function display(display_p_0, display_p_1, display_p_2) {
@@ -614,17 +609,18 @@ return '.';
     let playerCol_3_2;
     let toPrint_2_3;
     let blockResult0_1_4;
+    let __blockVar_5;
         board_1_0 = display_p_0;
         playerRow_3_1 = display_p_1;
         playerCol_3_2 = display_p_2;
             toPrint_2_3 = Object.create({}, { __boxee: { value: '', },});
     eachI(board_1_0, Object.create({}, { toPrint: { value: toPrint_2_3, }, playerRow: { value: playerRow_3_1, }, playerCol: { value: playerCol_3_2, },}));    print(toPrint_2_3.__boxee_1);        blockResult0_1_4 = void(0);
-                return __blockVar_5;
-                                return blockResult0_1_4;
+                __blockVar_5;
+                    return blockResult0_1_4;
   }
 
   function __call_13(__call_13_p_0, __call_13_p_1) {
-        __call_13_p_0        return immDrop(__call_13_p_1);
+            return immDrop(__call_13_p_1);
   }
 
   function __call_6(__call_6_p_0, __call_6_p_1) {

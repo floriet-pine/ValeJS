@@ -85,24 +85,25 @@ fn display(
 
 fn inputKey() int {
   key! = 0;
-  while (true) {
+  done! = false;
+  while (not done) {
     mut key = __getch();
     if (key == 81) {
-      ret key;
+      mut done = true;
     } else if (key == 119) {
-      ret key;
+      mut done = true;
     } else if (key == 115) {
-      ret key;
+      mut done = true;
     } else if (key == 97) {
-      ret key;
+      mut done = true;
     } else if (key == 100) {
-      ret key;
+      mut done = true;
     } else if (key == 10) {
       // Enter key, do nothing
     }
     // Continue
   }
-  __panic();
+  ret key;
 }
 
 
