@@ -8,8 +8,10 @@
   function __ext___greaterThanInt(a, b) { return (a|0) > (b|0); }
   function __ext___greaterThanOrEqInt(a, b) { return (a|0) >= (b|0); }
   function __ext___eqIntInt(a, b) { return (a|0) === (b|0); }
-  function __ext___and(a, b) { return !!a && !!b; }
   function __ext___addStrStr(a, b) { return a + b; }
+  function __ext___eqStrStr(a, b) { return a === b; }
+  function __ext___and(a, b) { return !!a && !!b; }
+  function __ext___not(a, b) { return a !== b; }
   function __ext___print(p) { console.log(p); }
   function __ext___getch() { while (true) { const result = window.prompt('Press a key'); if (typeof result === 'string' && result.length !== 0) { return result[0]; } } }
   function makeBoard() {

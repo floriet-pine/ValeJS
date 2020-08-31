@@ -345,7 +345,7 @@ public static class JavaScriptGenerator {
     var local = localLoad.Local;
     var codeVarName = ExtractCodeVarName(local);
 
-    Console.WriteLine("Doing localload! " + codeVarName);
+    //Console.WriteLine("Doing localload! " + codeVarName);
 
     yield return codeVarName;
   }
@@ -357,7 +357,7 @@ public static class JavaScriptGenerator {
     var local = localStore.Local;
     var codeVarName = ExtractCodeVarName(local);
 
-    Console.WriteLine("Doing localstore, huzzah! " + codeVarName);
+    //Console.WriteLine("Doing localstore, huzzah! " + codeVarName);
 
     yield return codeVarName;
     yield return " = ";
@@ -754,16 +754,16 @@ public static class JavaScriptGenerator {
     yield return "  function __ext___greaterThanInt(a, b) { return (a|0) > (b|0); }\r\n";
     yield return "  function __ext___greaterThanOrEqInt(a, b) { return (a|0) >= (b|0); }\r\n";
     yield return "  function __ext___eqIntInt(a, b) { return (a|0) === (b|0); }\r\n";
-
-    
-    yield return "  function __ext___and(a, b) { return !!a && !!b; }\r\n";
-    yield return "  function __ext___not(a, b) { return a !== b; }\r\n";
     
 
     // string
     yield return "  function __ext___addStrStr(a, b) { return a + b; }\r\n";
+    yield return "  function __ext___eqStrStr(a, b) { return a === b; }\r\n";
 
     // misc
+    yield return "  function __ext___and(a, b) { return !!a && !!b; }\r\n";
+    yield return "  function __ext___not(a, b) { return a !== b; }\r\n";
+
     yield return "  function __ext___print(p) { console.log(p); }\r\n";
     yield return "  function __ext___getch() { while (true) { const result = window.prompt('Press a key'); if (typeof result === 'string' && result.length !== 0) { return result[0]; } } }";
 
