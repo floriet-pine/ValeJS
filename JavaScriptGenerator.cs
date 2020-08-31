@@ -768,7 +768,7 @@ public static class JavaScriptGenerator {
     yield return "  function __ext___not(a) { return !a; }\r\n";
 
     yield return "  function __ext___print(p) { console.log(p); }\r\n";
-    yield return "  function __ext___getch() { if (!window) { return 5; } while (true) { const result = window.prompt('Press a key'); if (typeof result === 'string' && result.length !== 0) { return result[0]; } } }";
+    yield return "  function __ext___getch() { if (!window) { return 5; } while (true) { const result = window.prompt('Press a key'); if (typeof result === 'string' && result.length !== 0) { return result.charCodeAt(0); } } }";
 
     yield return "\r\n";
   }
