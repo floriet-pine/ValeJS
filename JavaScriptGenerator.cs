@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 #pragma warning disable 0162
 public static class JavaScriptGenerator {
   private const string TYPE_CONSECUTOR = "Consecutor";
-  private const string TYPE_TUP = "Tup0";
+  private const string TYPE_RETURN = "Result";
   private static readonly Regex _validFunctionCharsOnlyRegex = new Regex("^[0-9a-z_]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
   private static readonly Regex _functionNameRegex = new Regex("F\\(\"(?<Name>[a-z_]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
   private static readonly Regex _cNameRegex = new Regex("C\\(\"(?<Name>[a-z_]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -323,7 +323,7 @@ public static class JavaScriptGenerator {
     foreach(var expr in consecutor.Exprs) {
       yield return LevelString(level);
       if (expr == lastExpression) {
-        if (lastExpression.__type == "NewStruct" && lastExpression.ResultType.Referend.Name == TYPE_TUP)
+        if (lastExpression.__type == "NewStruct" && _tupRegex.IsMatch(lastExpression.ResultType.Referend.Name))
           break;
         yield return "return ";
       }
@@ -499,7 +499,7 @@ public static class JavaScriptGenerator {
 
     var fullStructName = newStruct.ResultType.Referend.Name;
     var structName = CName(fullStructName);
-    if (fullStructName == TYPE_TUP) {
+    if (_tupRegex.IsMatch(fullStructName)) {
       yield return "void(0)"; //undefined
       yield break;
     }

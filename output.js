@@ -13,7 +13,7 @@
   function __ext___and(a, b) { return !!a && !!b; }
   function __ext___not(a) { return !a; }
   function __ext___print(p) { console.log(p); }
-  function __ext___getch() { if (!window) { return 5; }; while (true) { const result = window.prompt('Press a key'); if (typeof result === 'string' && result.length !== 0) { return result[0]; } } }
+  function __ext___getch() { if (!window) { return 5; } while (true) { const result = window.prompt('Press a key'); if (typeof result === 'string' && result.length !== 0) { return result.charCodeAt(0); } } }
   function makeBoard() {
     let funcResult_1_0;
     return             funcResult_1_0 = Arr(10, Object.create({}, {}));
@@ -74,28 +74,23 @@
                   newPlayerCol_6 = playerCol_2_2;
       (($61_$61_(key_4, 81)) ? function(){
                 running_3 = false;
-        return void(0);
-
+        
 } : function(){
 return (($61_$61_(key_4, 119)) ? function(){
                     newPlayerRow_5 = $45_(newPlayerRow_5, 1);
-          return void(0);
-
+          
 } : function(){
 return (($61_$61_(key_4, 115)) ? function(){
                         newPlayerRow_5 = $43_(newPlayerRow_5, 1);
-            return void(0);
-
+            
 } : function(){
 return (($61_$61_(key_4, 97)) ? function(){
                             newPlayerCol_6 = $45_(newPlayerCol_6, 1);
-              return void(0);
-
+              
 } : function(){
 return (($61_$61_(key_4, 100)) ? function(){
                                 newPlayerCol_6 = $43_(newPlayerCol_6, 1);
-                return void(0);
-
+                
 } : function(){
 return void(0);
 })()
@@ -112,13 +107,11 @@ return void(0);
         (($61_$61__1(board_0[newPlayerRow_5][newPlayerCol_6], '.')) ? function(){
                     playerRow_2_1 = newPlayerRow_5;
                     playerCol_2_2 = newPlayerCol_6;
-          return void(0);
-
+          
 } : function(){
 return void(0);
 })()
-        return void(0);
-
+        
 } : function(){
 return void(0);
 })()
@@ -203,8 +196,7 @@ return false;
             charToPrint_3 = cell_2;
     ((and($61_$61_(closure_1_0.rowI, closure_1_0.playerRow_1), $61_$61_(cellI_1, closure_1_0.playerCol_1))) ? function(){
             charToPrint_3 = '@';
-      return void(0);
-
+      
 } : function(){
 return void(0);
 })()
@@ -268,28 +260,23 @@ return void(0);
                   key_1_0 = __getch();
       (($61_$61_(key_1_0, 81)) ? function(){
                 done_1 = true;
-        return void(0);
-
+        
 } : function(){
 return (($61_$61_(key_1_0, 119)) ? function(){
                     done_1 = true;
-          return void(0);
-
+          
 } : function(){
 return (($61_$61_(key_1_0, 115)) ? function(){
                         done_1 = true;
-            return void(0);
-
+            
 } : function(){
 return (($61_$61_(key_1_0, 97)) ? function(){
                             done_1 = true;
-              return void(0);
-
+              
 } : function(){
 return (($61_$61_(key_1_0, 100)) ? function(){
                                 done_1 = true;
-                return void(0);
-
+                
 } : function(){
 return (($61_$61_(key_1_0, 10)) ? function(){
 return void(0);
@@ -306,8 +293,7 @@ return void(0);
 })()
 ;
 })()
-      return void(0);
-      return true;
+            return true;
 
 } : function(){
 return false;
@@ -451,8 +437,7 @@ return __arr;
             l_1_3 = len_1(arr_1_0);
     while ((($60_(i_1_2, l_1_3)) ? function(){
             __call_9(func_1_1, i_1_2, arr_1_0[i_1_2]);            i_1_2 = $43_(i_1_2, 1);
-      return void(0);
-      return true;
+            return true;
 
 } : function(){
 return false;
@@ -528,8 +513,7 @@ return __arr;
             l_3 = len(arr_0);
     while ((($60_(i_2, l_3)) ? function(){
             __call_8(func_1, i_2, arr_0[i_2]);            i_2 = $43_(i_2, 1);
-      return void(0);
-      return true;
+            return true;
 
 } : function(){
 return false;
