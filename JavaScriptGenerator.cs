@@ -15,6 +15,7 @@ public static class JavaScriptGenerator {
   private static readonly Regex _codeVarNameRegex = new Regex("CodeVarName\\(\"(?<Name>.+)\"\\)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
   private static readonly Regex _templarBlockResultVarNameRegex = new Regex("(TemplarBlockResultVarName)\\((?<Number>\\d+)\\)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
   private static readonly Regex _codeLocationRegex = new Regex("CodeLocation\\((?<Position>[\\d\\-,]+)\\)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+  private static readonly Regex _tupRegex = new Regex("^Tup\\d+$", RegexOptions.Compiled);
 
   private static int _tempVarCounter = 0;
   private static readonly HashSet<string> _ignoredDiscardTypes = new HashSet<string>(){ "Unstackify" };
@@ -106,6 +107,7 @@ public static class JavaScriptGenerator {
     }
 
     var numberName = $"__blockVar_{number}";
+    _functionLocalVarNames.Add(numberName);
     return numberName;
   }
 
@@ -406,8 +408,6 @@ public static class JavaScriptGenerator {
     if (VERBOSE)
       yield return "\r\n//<discard>\r\n";
     
-    yield break; // Testing
-
     yield return LevelString(level);
     if (discard.SourceExpr != null && !_ignoredDiscardTypes.Contains(discard.SourceExpr.__type)) {
       foreach (var expressionCode in GenerateExpression(discard.SourceExpr, contentOfFunctionName, level, parent: (AstModel)discard)) {
@@ -493,7 +493,7 @@ public static class JavaScriptGenerator {
 
     var fullStructName = newStruct.ResultType.Referend.Name;
     var structName = CName(fullStructName);
-    if (fullStructName.Contains("\"Tup\"")) {
+    if (_tupRegex.IsMatch(fullStructName)) {
       yield return "void(0)"; //undefined
       yield break;
     }
@@ -759,6 +759,7 @@ public static class JavaScriptGenerator {
 
     // misc
     yield return "  function __ext___print(p) { console.log(p); }\r\n";
+    yield return "  function __ext___getch() { while (true) { const result = window.promt('Press a key'); if (typeof result === 'string' && result.length !== 0) { return result[0]; } } }";
 
     yield return "\r\n";
   }
