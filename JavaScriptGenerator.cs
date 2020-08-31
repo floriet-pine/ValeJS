@@ -214,6 +214,7 @@ public static class JavaScriptGenerator {
       yield return $"let {functionLocalVarName};\r\n";
     }
 
+    yield return "return ";
     yield return cachedCode;
 
     yield return LevelString(level);
@@ -232,12 +233,12 @@ public static class JavaScriptGenerator {
   }
 
   private static IEnumerable<string> GenerateReturn(IReturn @return, string contentOfFunctionName, int level) {
-    yield return LevelString(level);
-    yield return "return ";
+    //yield return LevelString(level);
+    //yield return "return ";
     foreach(var expressionCode in GenerateExpression(@return.SourceExpr, contentOfFunctionName, level + 1, parent: (AstModel)@return)) {
         yield return expressionCode;
     }
-    yield return ";\r\n";
+    //yield return "\r\n";
   }
 
   private static IEnumerable<string> GenerateCall(ICall call, string contentOfFunctionName, int level, AstModel parent) {
@@ -257,8 +258,8 @@ public static class JavaScriptGenerator {
     }
 
     yield return ")";
-    if (parent?.__type == TYPE_CONSECUTOR)
-      yield return ";";
+    //if (parent?.__type == TYPE_CONSECUTOR)
+      //yield return ";";
   }
 
   private static IEnumerable<string> GenerateInterfaceCall(IInterfaceCall interfaceCall, string contentOfFunctionName, int level, AstModel parent) {
@@ -284,8 +285,8 @@ public static class JavaScriptGenerator {
     }
 
     yield return ")";
-    if (parent?.__type == TYPE_CONSECUTOR)
-      yield return ";";
+    //if (parent?.__type == TYPE_CONSECUTOR)
+      //yield return ";";
   }
 
   private static IEnumerable<string> GenerateExternCall(IExternCall externCall, string contentOfFunctionName, int level) {
@@ -310,6 +311,35 @@ public static class JavaScriptGenerator {
     yield return ")";
   }
 
+
+  private static IEnumerable<string> GenerateConsecutor(IConsecutor consecutor, string contentOfFunctionName, int level, IExpression parent, bool inline) {
+    if (VERBOSE)
+      yield return "\r\n//<consecutor>\r\n";
+
+    var lastExpression = consecutor.Exprs.Last();
+
+    //if (_noReturnConsecutorChild.Contains(lastExpression.__type))
+    //  lastExpression = null; // Don't treat any ast the last (avoid creating a return)
+
+    yield return "(";
+    foreach(var expr in consecutor.Exprs) {
+      bool hasContent = false;
+      foreach(var expressionCode in GenerateExpression(expr, contentOfFunctionName, level, parent: (AstModel)consecutor)) {
+        if (!string.IsNullOrWhiteSpace(expressionCode))
+          hasContent = true;
+        yield return expressionCode;
+      }
+      if (expr != lastExpression && hasContent)
+        yield return ", ";
+    }
+    yield return ")";
+
+    if (VERBOSE)
+      yield return "\r\n//</consecutor>\r\n";
+  }
+
+
+/*
   private static IEnumerable<string> GenerateConsecutor(IConsecutor consecutor, string contentOfFunctionName, int level, IExpression parent, bool inline) {
     if (VERBOSE)
       yield return "\r\n//<consecutor>\r\n";
@@ -340,6 +370,7 @@ public static class JavaScriptGenerator {
     if (VERBOSE)
       yield return "\r\n//</consecutor>\r\n";
   }
+  */
 
   private static IEnumerable<string> GenerateLocalLoad(ILocalLoad localLoad, string contentOfFunctionName, int level) {
     if (VERBOSE)
@@ -366,8 +397,8 @@ public static class JavaScriptGenerator {
     yield return " = ";
     foreach(var sourceCode in GenerateExpression(localStore.SourceExpr, contentOfFunctionName, level))
         yield return sourceCode;
-    if (parent?.__type == TYPE_CONSECUTOR || parent?.__type == "Discard")
-      yield return ";\r\n";
+    //if (parent?.__type == TYPE_CONSECUTOR || parent?.__type == "Discard")
+      //yield return ";\r\n";
   }
 
   private static IEnumerable<string> GenerateStackify(IStackify stackify, string contentOfFunctionName, int level, AstModel parent) {
@@ -388,8 +419,8 @@ public static class JavaScriptGenerator {
         yield return expressionCode;
     }
 
-    if (parent?.__type == TYPE_CONSECUTOR)
-      yield return $";\r\n";
+    //if (parent?.__type == TYPE_CONSECUTOR)
+      //yield return $";\r\n";
 
     if (VERBOSE)
       yield return "\r\n//<stackify />\r\n";
@@ -412,7 +443,12 @@ public static class JavaScriptGenerator {
     if (VERBOSE)
       yield return "\r\n//<discard>\r\n";
     
-    if (discard.SourceExpr != null && !_ignoredDiscardTypes.Contains(discard.SourceExpr.__type)) {
+    if (_ignoredDiscardTypes.Contains(discard.SourceExpr.__type)) {
+      yield return "void(0)";
+      yield break;
+    }
+
+    if (discard.SourceExpr != null/* && !_ignoredDiscardTypes.Contains(discard.SourceExpr.__type)*/) {
       //yield return "(function(){\r\n";
       yield return LevelString(level);
       foreach (var expressionCode in GenerateExpression(discard.SourceExpr, contentOfFunctionName, level, parent: (AstModel)discard)) {
@@ -432,7 +468,7 @@ public static class JavaScriptGenerator {
   }
 
   private static IEnumerable<string> GenerateDestroy(IArgument argument, string contentOfFunctionName, int level) {
-    //yield return ParameterName(contentOfFunctionName, argument.ArgumentIndex);
+    yield return ParameterName(contentOfFunctionName, argument.ArgumentIndex);
     if (VERBOSE)
       yield return "\r\n//<destroy />\r\n";
   }
@@ -467,15 +503,15 @@ public static class JavaScriptGenerator {
     foreach(var conditionCode in GenerateExpression(conditionBlock, contentOfFunctionName, level))
       yield return conditionCode;
     yield return ") ? function(){\r\n";
-    if (thenBlock.InnerExpr.__type != TYPE_CONSECUTOR)
-        yield return "return ";
+    //if (thenBlock.InnerExpr.__type != TYPE_CONSECUTOR)
+    yield return "return ";
     foreach(var thenCode in GenerateExpression(thenBlock, contentOfFunctionName, level + 1))
       yield return thenCode;
     if (thenBlock.InnerExpr.__type != TYPE_CONSECUTOR)
       yield return ";";
     yield return "\r\n} : function(){\r\n";
-    if (elseBlock.InnerExpr.__type != TYPE_CONSECUTOR)
-        yield return "return ";
+    //if (elseBlock.InnerExpr.__type != TYPE_CONSECUTOR)
+    yield return "return ";
     foreach(var elseCode in GenerateExpression(elseBlock, contentOfFunctionName, level + 1))
       yield return elseCode;
     if (elseBlock.InnerExpr.__type != TYPE_CONSECUTOR)
@@ -487,10 +523,10 @@ public static class JavaScriptGenerator {
     if (parent?.__type != TYPE_CONSECUTOR)
       throw new Exception("Does not support while outside a consectutor");
 
-    yield return "while (";
+    yield return "(function(){ while (";
     foreach(var ifCode in GenerateExpression((AstModel)@while.BodyBlock, contentOfFunctionName, level, parent: (AstModel)@while))
       yield return ifCode;
-    yield return ") {}\r\n";
+    yield return ") {} })()\r\n";
   }
 
   private static IEnumerable<string> GenerateNewStruct(INewStruct newStruct, string contentOfFunctionName, int level) {
@@ -573,7 +609,7 @@ public static class JavaScriptGenerator {
       yield return " = ";
       foreach(var expressionCode in GenerateExpression(memberStore.SourceExpr, contentOfFunctionName, level))
         yield return expressionCode;
-      yield return ";";
+      //yield return ";";
   }
 
   private static IEnumerable<string> GenerateNewArrayFromValues(INewArrayFromValues newArrayFromValues, string contentOfFunctionName, int level) {
