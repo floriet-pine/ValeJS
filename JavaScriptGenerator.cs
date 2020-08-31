@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 #pragma warning disable 0162
 public static class JavaScriptGenerator {
   private const string TYPE_CONSECUTOR = "Consecutor";
-  private const string TYPE_TUP = "Result";
+  private const string TYPE_TUP = "Tup0";
   private static readonly Regex _validFunctionCharsOnlyRegex = new Regex("^[0-9a-z_]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
   private static readonly Regex _functionNameRegex = new Regex("F\\(\"(?<Name>[a-z_]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
   private static readonly Regex _cNameRegex = new Regex("C\\(\"(?<Name>[a-z_]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -499,7 +499,7 @@ public static class JavaScriptGenerator {
 
     var fullStructName = newStruct.ResultType.Referend.Name;
     var structName = CName(fullStructName);
-    if (_tupRegex.IsMatch(fullStructName)) {
+    if (fullStructName == TYPE_TUP) {
       yield return "void(0)"; //undefined
       yield break;
     }
