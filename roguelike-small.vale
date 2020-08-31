@@ -164,7 +164,7 @@ fn main() int {
       mut newPlayerCol = newPlayerCol + 1;
     }
 
-    // killedGoblin! = false;
+    killedGoblin! = false;
     // goblins.keys().each((key){
     //   if (goblinAt?(&goblins, key, newPlayerRow, newPlayerCol)) {
     //     goblins.remove(key);

@@ -61,7 +61,8 @@
     let key_4;
     let newPlayerRow_5;
     let newPlayerCol_6;
-    let blockResult0_7;
+    let killedGoblin_7;
+    let blockResult0_8;
     let blockResult1_4;
             board_0 = makeBoard();
             playerRow_2_1 = 4;
@@ -101,6 +102,7 @@ return void(0);
 })()
 ;
 })()
+                  killedGoblin_7 = false;
       (($61_$61__1(board_0[newPlayerRow_5][newPlayerCol_6], '.')) ? function(){
                 playerRow_2_1 = newPlayerRow_5;
                 playerCol_2_2 = newPlayerCol_6;
@@ -108,8 +110,8 @@ return void(0);
 } : function(){
 return void(0);
 })()
-            blockResult0_7 = void(0);
-                        return blockResult0_7;
+            blockResult0_8 = void(0);
+                              return blockResult0_8;
       return true;
 
 } : function(){
