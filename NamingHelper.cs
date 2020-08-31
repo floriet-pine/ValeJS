@@ -1,10 +1,13 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System;
 
 public class NamingHelper {
   private static readonly Regex _simpleFunctionNameRegex = new Regex("F\\(\"(?<Name>[a-z_]+)\"\\)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
   private static readonly Regex _externalFunctionNameRegex = new Regex("F\\(\"(?<Name>[a-z_]+)\"", RegexOptions.Compiled | RegexOptions.IgnoreCase);
   private static readonly Regex _cNameRegex = new Regex("C\\(\"(?<Name>[a-z_]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+  private static readonly Regex _simpleCharRegex = new Regex("[a-z_]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
   private static readonly Dictionary<string, string> collisionAvoidanceRename = new Dictionary<string, string>() {
     { "Array", "ValeArray" },
@@ -18,6 +21,11 @@ public class NamingHelper {
   }
 
   public string FixFunction(string astFunctionName) {
+    if (collisionAvoidanceRename.TryGetValue(astFunctionName, out var replacedValue)) {
+      return replacedValue;
+    }
+
+    /*
     if (_prettyFunctionNameByAstFunctionName.TryGetValue(astFunctionName, out var result))
       return result;
 
@@ -27,17 +35,33 @@ public class NamingHelper {
 
     var fallbackName = OnlyLettersAndNumbers(astFunctionName);
     return GetUniqueName(fallbackName, astFunctionName);
+    */
+
+    return JavascriptifyName(astFunctionName);
   }
 
   public string FixExternalFunction(string functionName) {
+    if (collisionAvoidanceRename.TryGetValue(functionName, out var replacedValue)) {
+      return replacedValue;
+    }
+
+    /*
     var match = _externalFunctionNameRegex.Match(functionName);
     if (match.Success)
       return match.Groups["Name"].Value;
 
     return OnlyLettersAndNumbers(functionName);
+    */
+
+    return JavascriptifyName(functionName);
   }
 
   public string FixCName(string cName) {
+    if (collisionAvoidanceRename.TryGetValue(cName, out var replacedValue)) {
+      return replacedValue;
+    }
+
+    /*
     var leftOfColon = cName.Split(':', 2)[0];
     var originalCNameType = leftOfColon;
     var match = _cNameRegex.Match(originalCNameType);
@@ -48,9 +72,26 @@ public class NamingHelper {
     var onlyLettersAndNumbers = OnlyLettersAndNumbers(leftOfColon);
     var uniqueName = GetUniqueName(onlyLettersAndNumbers, originalCNameType);
     return uniqueName;
+    */
+    return JavascriptifyName(cName);
   }
 
+  private static string JavascriptifyName(string str) {
+    var result = "";
+    for (var i = 0; i < str.Length; i++) {
+      var c = str[i];
+      if (char.IsLetterOrDigit(c) || c == '_') {
+        result += c;
+      } else {
+        result += "$" + (int)c + "_";
+      }
+    }
+    return result;
+  }
+
+/*
   private static string OnlyLettersAndNumbers(string str) {
+    Console.WriteLine("OLAN input: " + str);
     bool lastValid = true;
     var result = "";
     for (var i = 0; i < str.Length; i++) {
@@ -64,6 +105,7 @@ public class NamingHelper {
         lastValid = false;
       }
     }
+    Console.WriteLine("OLAN output: " + result);
     return result;
   }
 
@@ -106,5 +148,5 @@ public class NamingHelper {
     _astFunctionNameByPrettyFunctionName.Add(prettyFunctionName, astFunctionName);
     return prettyFunctionName;
   }
-
+*/
 }

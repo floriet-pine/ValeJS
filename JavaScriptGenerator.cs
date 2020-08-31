@@ -202,7 +202,7 @@ public static class JavaScriptGenerator {
     yield return $") {{\r\n";
 
     string cachedCode = "";
-    foreach (var blockCode in GenerateBlock(function.Block, saneFunctionName, level + 1)) {
+    foreach (var blockCode in GenerateExpression(function.Block, saneFunctionName, level + 1)) {
       cachedCode += blockCode; //TODO: Should be itterated, might require AST changes
     }
 
@@ -341,6 +341,9 @@ public static class JavaScriptGenerator {
 
     var local = localLoad.Local;
     var codeVarName = ExtractCodeVarName(local);
+
+    Console.WriteLine("Doing localload! " + codeVarName);
+
     yield return codeVarName;
   }
 
@@ -350,6 +353,9 @@ public static class JavaScriptGenerator {
 
     var local = localStore.Local;
     var codeVarName = ExtractCodeVarName(local);
+
+    Console.WriteLine("Doing localstore, huzzah! " + codeVarName);
+
     yield return codeVarName;
     yield return " = ";
     foreach(var sourceCode in GenerateExpression(localStore.SourceExpr, contentOfFunctionName, level))
@@ -468,17 +474,15 @@ public static class JavaScriptGenerator {
       yield return elseCode;
     if (elseBlock.InnerExpr.__type != TYPE_CONSECUTOR)
         yield return ";";
-    yield return "\r\n})()";
+    yield return "\r\n})()\r\n";
   }
 
   private static IEnumerable<string> GenerateWhile(IWhile @while, string contentOfFunctionName, int level, AstModel parent) {
     if (parent?.__type != TYPE_CONSECUTOR)
       throw new Exception("Does not support while outside a consectutor");
 
-    var @if = @while.BodyBlock.InnerExpr;
-
     yield return "while (";
-    foreach(var ifCode in GenerateIf(@if, contentOfFunctionName, level, parent: (AstModel)@while))
+    foreach(var ifCode in GenerateExpression((AstModel)@while.BodyBlock, contentOfFunctionName, level, parent: (AstModel)@while))
       yield return ifCode;
     yield return ") {}\r\n";
   }
@@ -605,6 +609,13 @@ public static class JavaScriptGenerator {
     yield return "\r\n})()";
   }
 
+  private static IEnumerable<string> GenerateArrayLength(IArrayLength arrayLength, string contentOfFunctionName, int level) {
+    foreach(var expressionCode in GenerateExpression(arrayLength.SourceExpr, contentOfFunctionName, level))
+      yield return expressionCode;
+    
+    yield return ".length";
+  }
+
   private static IEnumerable<string> GenerateArrayLoad(IArrayLoad arrayLoad, string contentOfFunctionName, int level) {
     foreach (var arrayExprCode in GenerateExpression(arrayLoad.ArrayExpr, contentOfFunctionName, level))
       yield return arrayExprCode;
@@ -719,6 +730,10 @@ public static class JavaScriptGenerator {
         foreach (var constructUnknownSizeArrayCode in GenerateConstructUnknownSizeArrayCode(astModel, contentOfFunctionName, level))
           yield return constructUnknownSizeArrayCode;
         break;
+      case "ArrayLength":
+        foreach (var arrayLengthCode in GenerateArrayLength(astModel, contentOfFunctionName, level))
+          yield return arrayLengthCode;
+        break;
       default:
         yield return $"\r\n//<UNSUPPORTED {astModel.__type} />\r\n";
         //throw new Exception("Unsupported __type: " + astModel.__type);
@@ -736,6 +751,7 @@ public static class JavaScriptGenerator {
     yield return "  function __ext___greaterThanInt(a, b) { return (a|0) > (b|0); }\r\n";
     yield return "  function __ext___greaterThanOrEqInt(a, b) { return (a|0) >= (b|0); }\r\n";
     yield return "  function __ext___eqIntInt(a, b) { return (a|0) === (b|0); }\r\n";
+    yield return "  function __ext___and(a, b) { return !!a && !!b; }\r\n";
     
 
     // string

@@ -11,6 +11,7 @@ public class AstModel : IProgram,
                         IBlock,
                         IReturn,
                         ICall,
+                        IArrayLength,
                         IInterfaceCall,
                         IConsecutor,
                         IStackify,
@@ -277,4 +278,8 @@ public interface IConstructUnknownSizeArray : IExpression {
   AstModel GeneratorExpr { get; }
   AstModel GeneratorReferend { get; }
   IPrototype GeneratorMethod { get; }
+}
+
+public interface IArrayLength : IExpression {
+  AstModel SourceExpr { get; }
 }

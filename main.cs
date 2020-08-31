@@ -100,18 +100,14 @@ namespace dev.vale.awesome {
 */
 
       var valeCode = @"
-        // immutable unknown-size-array
-
-        fn Arr<M, F>(n int, generator &F) Array<M, T>
-        rules(M Mutability, T Ref, Prot(""__call"", (&F, int), T))
-        {
-          Array<M>(n, &IFunction1<mut, int, T>(generator))
-        }
-
-        fn main() {
-          a = Arr<imm>(5, {_});
-          = a[3];
-        }
+fn main() int {
+  i! = 0;
+  while (i < 10) {
+    print(""hi"");
+    mut i = i + 1;
+  }
+  = 0;
+}
       ";
 
       Console.WriteLine("Vale code:");
@@ -124,7 +120,7 @@ namespace dev.vale.awesome {
         astJson = ValeHelper.Build(valeCode);
 
         Console.WriteLine("AST:");
-        Console.WriteLine(astJson);
+        //Console.WriteLine(astJson);
         Console.WriteLine("----------");
         File.WriteAllText("ast.json", astJson);
       }
@@ -137,7 +133,7 @@ namespace dev.vale.awesome {
       using (var outputFileStreamWriter = new StreamWriter(outputFileStream, Encoding.ASCII)) {
         foreach (var code in JavaScriptGenerator.Generate(ast)) {
           outputFileStreamWriter.Write(code);
-          Console.Write(code);
+          // Console.Write(code);
         }
       }
 
