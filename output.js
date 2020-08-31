@@ -11,9 +11,9 @@
   function __ext___addStrStr(a, b) { return a + b; }
   function __ext___eqStrStr(a, b) { return a === b; }
   function __ext___and(a, b) { return !!a && !!b; }
-  function __ext___not(a, b) { return a !== b; }
+  function __ext___not(a) { return !a; }
   function __ext___print(p) { console.log(p); }
-  function __ext___getch() { while (true) { const result = window.prompt('Press a key'); if (typeof result === 'string' && result.length !== 0) { return result[0]; } } }
+  function __ext___getch() { if (!window) { return 5; }; while (true) { const result = window.prompt('Press a key'); if (typeof result === 'string' && result.length !== 0) { return result[0]; } } }
   function makeBoard() {
     let funcResult_1_0;
     return             funcResult_1_0 = Arr(10, Object.create({}, {}));
@@ -33,7 +33,7 @@
         closure_0 = __call_8_p_0;
         rowI_1_1 = __call_8_p_1;
         row_1_2 = __call_8_p_2;
-    eachI_1(row_1_2, Object.create({}, { rowI: { value: rowI_1_1, }, playerRow_1: { value: closure_0.playerRow, }, playerCol_1: { value: closure_0.playerCol, }, toPrint_1: { value: closure_0.toPrint, },}));        closure_0.toPrint.__boxee_2 = $43__1(closure_0.toPrint.__boxee_2, '\n');        blockResult0_3_3 = void(0);
+    eachI_1(row_1_2, Object.create({}, { rowI: { writable: true, value: rowI_1_1, }, playerRow_1: { writable: true, value: closure_0.playerRow, }, playerCol_1: { writable: true, value: closure_0.playerCol, }, toPrint_1: { writable: true, value: closure_0.toPrint, },}));        closure_0.toPrint.__boxee = $43__1(closure_0.toPrint.__boxee, '\n');        blockResult0_3_3 = void(0);
                     return blockResult0_3_3;
   }
 
@@ -179,7 +179,7 @@ return false;
   }
 
   function constructor_1() {
-    return Object.create(_proto_IFunction1_1_AnonSubstruct_1, { anonSubstructMember0_1: { value: Object.create({}, {}), },});
+    return Object.create(_proto_IFunction1_1_AnonSubstruct_1, { anonSubstructMember0_1: { writable: true, value: Object.create({}, {}), },});
   }
 
   function immConcreteDestructor_3(immConcreteDestructor_3_p_0) {
@@ -208,7 +208,7 @@ return false;
 } : function(){
 return void(0);
 })()
-        closure_1_0.toPrint_1.__boxee_3 = $43__1(closure_1_0.toPrint_1.__boxee_3, charToPrint_3);        blockResult0_5_4 = void(0);
+        closure_1_0.toPrint_1.__boxee = $43__1(closure_1_0.toPrint_1.__boxee, charToPrint_3);        blockResult0_5_4 = void(0);
                         return blockResult0_5_4;
   }
 
@@ -241,7 +241,7 @@ return void(0);
   }
 
   function constructor() {
-    return Object.create(_proto_IFunction1_3_AnonSubstruct_3, { anonSubstructMember0_3: { value: Object.create({}, {}), },});
+    return Object.create(_proto_IFunction1_3_AnonSubstruct_3, { anonSubstructMember0_3: { writable: true, value: Object.create({}, {}), },});
   }
 
   function $61_$61__1($61_$61__1_p_0, $61_$61__1_p_1) {
@@ -365,7 +365,7 @@ return false;
   }
 
   function IFunction1_5(iFunction1_5_p_0) {
-    return Object.create(_proto_IFunction1_AnonSubstruct, { anonSubstructMember0: { value: iFunction1_5_p_0, },});
+    return Object.create(_proto_IFunction1_AnonSubstruct, { anonSubstructMember0: { writable: true, value: iFunction1_5_p_0, },});
   }
 
   function $45_($45__p_0, $45__p_1) {
@@ -486,12 +486,12 @@ return __arr;
     let blockResult0_8_2;
         closure_2_0 = __call_10_p_0;
         row_2_1 = __call_10_p_1;
-        blockResult0_8_2 = Arr_1(10, Object.create({}, { row: { value: row_2_1, },}));
+        blockResult0_8_2 = Arr_1(10, Object.create({}, { row: { writable: true, value: row_2_1, },}));
                 return blockResult0_8_2;
   }
 
   function IFunction1_4(iFunction1_4_p_0) {
-    return Object.create(_proto_IFunction1_2_AnonSubstruct_2, { anonSubstructMember0_2: { value: iFunction1_4_p_0, },});
+    return Object.create(_proto_IFunction1_2_AnonSubstruct_2, { anonSubstructMember0_2: { writable: true, value: iFunction1_4_p_0, },});
   }
 
   function __print(__print_p_0) {
@@ -615,8 +615,8 @@ return '.';
         board_1_0 = display_p_0;
         playerRow_3_1 = display_p_1;
         playerCol_3_2 = display_p_2;
-            toPrint_2_3 = Object.create({}, { __boxee: { value: '', },});
-    eachI(board_1_0, Object.create({}, { toPrint: { value: toPrint_2_3, }, playerRow: { value: playerRow_3_1, }, playerCol: { value: playerCol_3_2, },}));    print(toPrint_2_3.__boxee_1);        blockResult0_1_4 = void(0);
+            toPrint_2_3 = Object.create({}, { __boxee: { writable: true, value: '', },});
+    eachI(board_1_0, Object.create({}, { toPrint: { writable: true, value: toPrint_2_3, }, playerRow: { writable: true, value: playerRow_3_1, }, playerCol: { writable: true, value: playerCol_3_2, },}));    print(toPrint_2_3.__boxee);        blockResult0_1_4 = void(0);
                 return __blockVar_5;
                     return blockResult0_1_4;
   }
