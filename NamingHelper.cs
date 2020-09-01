@@ -25,18 +25,6 @@ public class NamingHelper {
       return replacedValue;
     }
 
-    /*
-    if (_prettyFunctionNameByAstFunctionName.TryGetValue(astFunctionName, out var result))
-      return result;
-
-    var match = _simpleFunctionNameRegex.Match(astFunctionName);
-    if (match.Success)
-      return GetUniqueName(match.Groups["Name"].Value, astFunctionName);
-
-    var fallbackName = OnlyLettersAndNumbers(astFunctionName);
-    return GetUniqueName(fallbackName, astFunctionName);
-    */
-
     return JavascriptifyName(astFunctionName);
   }
 
@@ -44,14 +32,6 @@ public class NamingHelper {
     if (collisionAvoidanceRename.TryGetValue(functionName, out var replacedValue)) {
       return replacedValue;
     }
-
-    /*
-    var match = _externalFunctionNameRegex.Match(functionName);
-    if (match.Success)
-      return match.Groups["Name"].Value;
-
-    return OnlyLettersAndNumbers(functionName);
-    */
 
     return JavascriptifyName(functionName);
   }
@@ -61,18 +41,6 @@ public class NamingHelper {
       return replacedValue;
     }
 
-    /*
-    var leftOfColon = cName.Split(':', 2)[0];
-    var originalCNameType = leftOfColon;
-    var match = _cNameRegex.Match(originalCNameType);
-    if (match.Success)
-      return GetUniqueName(match.Groups["Name"].Value, originalCNameType);
-
-    // Fallback
-    var onlyLettersAndNumbers = OnlyLettersAndNumbers(leftOfColon);
-    var uniqueName = GetUniqueName(onlyLettersAndNumbers, originalCNameType);
-    return uniqueName;
-    */
     return JavascriptifyName(cName);
   }
 
@@ -88,65 +56,4 @@ public class NamingHelper {
     }
     return result;
   }
-
-/*
-  private static string OnlyLettersAndNumbers(string str) {
-    Console.WriteLine("OLAN input: " + str);
-    bool lastValid = true;
-    var result = "";
-    for (var i = 0; i < str.Length; i++) {
-      var c = str[i];
-      if (char.IsLetterOrDigit(c)) {
-        result += c;
-        lastValid = true;
-      }
-      else if (lastValid) {
-        result += '_';
-        lastValid = false;
-      }
-    }
-    Console.WriteLine("OLAN output: " + result);
-    return result;
-  }
-
-  private string GetUniqueName(string prettyFunctionName, string astFunctionName) {
-    // Prettify at bit more
-    // Waiting for AST generator to output more sane names, before improving this method
-    prettyFunctionName = prettyFunctionName.Replace("_F_", "_");
-    prettyFunctionName = prettyFunctionName.Replace("_R_", "_");
-    prettyFunctionName = prettyFunctionName.Replace("_C_", "_");
-    prettyFunctionName = prettyFunctionName.Replace("_TR_", "_");
-    prettyFunctionName = prettyFunctionName.Replace("_TK_", "_");
-    prettyFunctionName = prettyFunctionName.Replace("_TM_", "_");
-    prettyFunctionName = prettyFunctionName.Replace("_SId_", "_");
-    prettyFunctionName = prettyFunctionName.Replace("_IId_", "_");
-    prettyFunctionName = prettyFunctionName.Replace("_i_", "_");
-    prettyFunctionName = prettyFunctionName.Replace("_imm_", "_");
-
-    prettyFunctionName = prettyFunctionName.Replace("_LC_", "_");
-    prettyFunctionName = prettyFunctionName.Replace("_CodeLocation_", "_");
-    prettyFunctionName = prettyFunctionName.Replace("_CodeLocat_", "_");
-
-    if (prettyFunctionName.Length > 50)
-      prettyFunctionName = prettyFunctionName.Substring(0, 50);
-    //
-
-    if (_prettyFunctionNameByAstFunctionName.TryGetValue(astFunctionName, out var result))
-      return result;
-
-    var orgPrettyName = prettyFunctionName;
-    var i = 2;
-    while (_astFunctionNameByPrettyFunctionName.ContainsKey(prettyFunctionName)) {
-      prettyFunctionName = $"{orgPrettyName}_{i}";
-    }
-
-    if (collisionAvoidanceRename.TryGetValue(astFunctionName, out var replacedValue)) {
-      prettyFunctionName = replacedValue;
-    }
-
-    _prettyFunctionNameByAstFunctionName.Add(astFunctionName, prettyFunctionName);
-    _astFunctionNameByPrettyFunctionName.Add(prettyFunctionName, astFunctionName);
-    return prettyFunctionName;
-  }
-*/
 }
