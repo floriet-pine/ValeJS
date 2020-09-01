@@ -1,3 +1,13 @@
+// Welcome to ValeJS, the Vale-to-JS cross-compiler!
+// See https://vale.dev/blog/replit-prototype for information
+// about what this is and why it's so awesome!
+
+// Modify the below VALE_CODE constant and then hit Run to
+// compile your program!
+
+// Also see ValeCompiler0.0.8.zip for the version of the
+// compiler that has the Hybrid-Generational Memory prototype!
+
 using System;
 using System.IO;
 using System.Net;
