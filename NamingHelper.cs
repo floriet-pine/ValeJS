@@ -3,19 +3,13 @@ using System.Text.RegularExpressions;
 using System;
 
 public class NamingHelper {
-  private static readonly Regex _simpleFunctionNameRegex = new Regex("F\\(\"(?<Name>[a-z_]+)\"\\)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-  private static readonly Regex _externalFunctionNameRegex = new Regex("F\\(\"(?<Name>[a-z_]+)\"", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-  private static readonly Regex _cNameRegex = new Regex("C\\(\"(?<Name>[a-z_]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-  private static readonly Regex _simpleCharRegex = new Regex("[a-z_]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
   private static readonly Dictionary<string, string> collisionAvoidanceRename = new Dictionary<string, string>() {
     { "Array", "ValeArray" },
   };
 
   // Manual two-way dictionary
-  private Dictionary<string, string> _prettyFunctionNameByAstFunctionName = new Dictionary<string, string>();
-  private Dictionary<string, string> _astFunctionNameByPrettyFunctionName = new Dictionary<string, string>();
+  //private Dictionary<string, string> _prettyFunctionNameByAstFunctionName = new Dictionary<string, string>();
+  //private Dictionary<string, string> _astFunctionNameByPrettyFunctionName = new Dictionary<string, string>();
 
   public NamingHelper() {
   }

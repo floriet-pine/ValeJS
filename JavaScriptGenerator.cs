@@ -20,7 +20,6 @@ public static class JavaScriptGenerator {
 
   private static int _tempVarCounter = 0;
   private static readonly HashSet<string> _ignoredDiscardTypes = new HashSet<string>(){ "Unstackify", "Argument" };
-  private static readonly HashSet<string> _noReturnConsecutorChild = new HashSet<string>(){ "Return", "Stackify", "Destroy" };
   private static readonly HashSet<string> _anonymousVarNames = new HashSet<string>(){ "AnonymousSubstructMemberName", "TemplarTemporaryVarName", "TemplarBlockResultVarName", };
 
   private static readonly HashSet<string> _functionLocalVarNames = new HashSet<string>();
@@ -403,10 +402,10 @@ public static class JavaScriptGenerator {
       yield return "\r\n//<argument />\r\n";
   }
 
-  private static IEnumerable<string> GenerateDestroy(IArgument argument, string contentOfFunctionName, int level) {
-    yield return ParameterName(contentOfFunctionName, argument.ArgumentIndex);
-    if (VERBOSE)
-      yield return "\r\n//<destroy />\r\n";
+  private static IEnumerable<string> GenerateDestroy(AstModel destroy, string contentOfFunctionName, int level) {
+      foreach (var expressionCode in GenerateExpression(destroy.StructExpr, contentOfFunctionName, level)) {
+        yield return expressionCode;
+      }
   }
 
   private static IEnumerable<string> GenerateConstant(IConstant constant, string contentOfFunctionName, int level) {
@@ -580,6 +579,12 @@ public static class JavaScriptGenerator {
     yield return ".length";
   }
 
+  private static IEnumerable<string> GenerateDestroyKnownSizeArrayIntoFunction(AstModel destroyKnownSizeArrayIntoFunction, string contentOfFunctionName, int level) {
+    yield return "void(0)";
+  }
+
+  
+
   private static IEnumerable<string> GenerateArrayLoad(IArrayLoad arrayLoad, string contentOfFunctionName, int level) {
     foreach (var arrayExprCode in GenerateExpression(arrayLoad.ArrayExpr, contentOfFunctionName, level))
       yield return arrayExprCode;
@@ -698,6 +703,10 @@ public static class JavaScriptGenerator {
         foreach (var arrayLengthCode in GenerateArrayLength(astModel, contentOfFunctionName, level))
           yield return arrayLengthCode;
         break;
+      case "DestroyKnownSizeArrayIntoFunction":
+        foreach (var destroyKSAIntoFuncCode in GenerateDestroyKnownSizeArrayIntoFunction(astModel, contentOfFunctionName, level))
+          yield return destroyKSAIntoFuncCode;
+        break;
       default:
         yield return $"\r\n//<UNSUPPORTED {astModel.__type} />\r\n";
         //throw new Exception("Unsupported __type: " + astModel.__type);
@@ -726,7 +735,7 @@ public static class JavaScriptGenerator {
     yield return "  function __ext___not(a) { return !a; }\r\n";
 
     yield return "  function __ext___print(p) { console.log(p); }\r\n";
-    yield return "  function __ext___getch() { if (!window) { return 5; } while (true) { const result = window.prompt('Press a key'); if (typeof result === 'string' && result.length !== 0) { return result.charCodeAt(0); } } }";
+    yield return "  function __ext___getch() { if (typeof window == 'undefined') { return 5; } while (true) { const result = window.prompt('Press a key'); if (typeof result === 'string' && result.length !== 0) { return result.charCodeAt(0); } } }";
 
     yield return "\r\n";
   }

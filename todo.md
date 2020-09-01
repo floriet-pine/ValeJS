@@ -10,3 +10,5 @@ Simple tups is currently created as 'void 0' (undefined). But more advanced tup'
 # Features
 
 ** Generation/consume for arrays **
+
+Especially GenerateDestroyKnownSizeArrayIntoFunction, which is hardcoded to just give void(0) right now.
